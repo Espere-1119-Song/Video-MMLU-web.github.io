@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     title: "Model",
                     field: "model",
                     widthGrow: 4,
-                    minWidth: 160
+                    minWidth: 110
                 },
                 {
                     title: "# F",
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     title: "Overall",
                     field: "avg_acc",
                     widthGrow: 0.9,
-                    minWidth: 50
+                    minWidth: 70
                 },
                 {
                     title: "<div style='text-align: center;'>Notebook</div>",
@@ -258,6 +258,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     let { min, max } = getColumnMinMax(behavior_total_benchmark_data, column.field);
                     column.formatterParams = { min, max };
                 }
+            });
+
+            // Process the data to ensure numeric values for sorting
+            behavior_total_benchmark_data.forEach(item => {
+                // Convert string values to numbers for proper sorting
+                item.avg_acc = parseFloat(item.avg_acc);
+                item.notebook_avg = parseFloat(item.notebook_avg);
+                item.notebook_math = parseFloat(item.notebook_math);
+                item.notebook_physics = parseFloat(item.notebook_physics);
+                item.notebook_chemistry = parseFloat(item.notebook_chemistry);
+                item.quiz_avg = parseFloat(item.quiz_avg);
+                item.quiz_math = parseFloat(item.quiz_math);
+                item.quiz_physics = parseFloat(item.quiz_physics);
+                item.quiz_chemistry = parseFloat(item.quiz_chemistry);
             });
 
             var behavior_table = new Tabulator("#behavior-benchmark-main-table", {

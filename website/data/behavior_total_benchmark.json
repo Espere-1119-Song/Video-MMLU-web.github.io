@@ -266,7 +266,7 @@
     "quiz_chemistry": 7.62
   },
   {
-    "model": "LLaVA-OneVision-OV",
+    "model": "LLaVA-OneVision-OV-0.5B",
     "frames": "32",
     "tpf": "-",
     "avg_acc": 19.60,
@@ -658,7 +658,7 @@
     "quiz_chemistry": 33.60
   },
   {
-    "model": "LLaVA-NeXT (Mistral 7B)",
+    "model": "LLaVA-NeXT-Mistral-7B",
     "frames": "32",
     "tpf": "-",
     "avg_acc": 25.83,
@@ -812,7 +812,7 @@
     "quiz_chemistry": 28.66
   },
   {
-    "model": "LLaVA-OneVision-OV",
+    "model": "LLaVA-OneVision-OV-7B",
     "frames": "32",
     "tpf": "-",
     "avg_acc": 33.99,
@@ -994,7 +994,7 @@
     "quiz_chemistry": 19.59
   },
   {
-    "model": "LLaVA-1.5 (Vicuna 13B)",
+    "model": "LLaVA-1.5-Vicuna-13B",
     "frames": "32",
     "tpf": "-",
     "avg_acc": 21.58,
@@ -1162,7 +1162,7 @@
     "quiz_chemistry": 44.38
   },
   {
-    "model": "LLaVA-NeXT (Nous-Hermes-2-Yi 34B)",
+    "model": "LLaVA-NeXT-Yi-34B",
     "frames": "32",
     "tpf": "-",
     "avg_acc": 34.16,
@@ -1176,7 +1176,7 @@
     "quiz_chemistry": 50.00
   },
   {
-    "model": "LLaVA-NeXT (Qwen1.5 32B)",
+    "model": "LLaVA-NeXT-Qwen-32B",
     "frames": "32",
     "tpf": "-",
     "avg_acc": 40.43,
