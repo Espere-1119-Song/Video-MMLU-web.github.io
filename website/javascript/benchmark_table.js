@@ -71,33 +71,19 @@ function createColorFormatter(startColor, endColor) {
 // 为每种类型定义不同的颜色
 const colorFormatterAvg = createColorFormatter(
     { r: 255, g: 255, b: 255 },  // 开始颜色（白色）
-    { r: 206, g: 212, b: 218 }   // 结束颜色（灰色）
+    { r: 215, g: 240, b: 246 }   // 结束颜色（灰色）
 );
 
 const colorFormatterGoalInt = createColorFormatter(
     { r: 255, g: 255, b: 255 },  // 开始颜色（白色）
-    { r: 238, g: 211, b: 217 }   // 结束颜色（粉色）
+    { r: 148, g: 153, b: 192 }   // 结束颜色（浅紫色）
 );
 
 const colorFormatterActionSeq = createColorFormatter(
     { r: 255, g: 255, b: 255 },  // 开始颜色（白色）
-    { r: 204, g: 211, b: 202 }   // 结束颜色（浅绿色）
+    { r: 126, g: 197, b: 164 }   // 结束颜色（浅绿色）
 );
 
-const colorFormatterSubgoal = createColorFormatter(
-    { r: 255, g: 255, b: 255 },  // 开始颜色（白色）
-    { r: 245, g: 232, b: 221 }   // 结束颜色（浅橙色）
-);
-
-const colorFormatterTrans = createColorFormatter(
-    { r: 255, g: 255, b: 255 },  // 开始颜色（白色）
-    { r: 181, g: 192, b: 208 }   // 结束颜色（浅蓝色）
-);
-
-const colorFormatterObject = createColorFormatter(
-    { r: 255, g: 255, b: 255 },  // 开始颜色（白色）
-    { r: 179, g: 170, b: 210 }   // 结束颜色（浅紫色）
-);
 
 document.addEventListener('DOMContentLoaded', function () {
     Promise.all([
@@ -226,24 +212,30 @@ document.addEventListener('DOMContentLoaded', function () {
                     title: "Overall",
                     field: "avg_acc",
                     widthGrow: 0.9,
-                    minWidth: 70
+                    minWidth: 50,
+                    sorter: function(a, b, aRow, bRow, column, dir, sorterParams){
+                        // Convert to numbers for proper sorting
+                        var a_val = parseFloat(a) || 0;
+                        var b_val = parseFloat(b) || 0;
+                        return a_val - b_val;
+                    }
                 },
                 {
                     title: "<div style='text-align: center;'>Notebook</div>",
                     columns: [
-                        { title: "Avg.", field: "notebook_avg", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
-                        { title: "Math", field: "notebook_math", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
-                        { title: "Physics", field: "notebook_physics", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
-                        { title: "Chemistry", field: "notebook_chemistry", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
+                        { title: "Avg.", field: "notebook_avg", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
+                        { title: "Math", field: "notebook_math", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
+                        { title: "Physics", field: "notebook_physics", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
+                        { title: "Chemistry", field: "notebook_chemistry", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
                     ]
                 },
                 {
                     title: "<div style='text-align: center;'>Quiz</div>",
                     columns: [
-                        { title: "Avg.", field: "quiz_avg", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
-                        { title: "Math", field: "quiz_math", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
-                        { title: "Physics", field: "quiz_physics", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
-                        { title: "Chemistry", field: "quiz_chemistry", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
+                        { title: "Avg.", field: "quiz_avg", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
+                        { title: "Math", field: "quiz_math", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
+                        { title: "Physics", field: "quiz_physics", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
+                        { title: "Chemistry", field: "quiz_chemistry", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
                     ]
                 }
             ];
@@ -263,15 +255,33 @@ document.addEventListener('DOMContentLoaded', function () {
             // Process the data to ensure numeric values for sorting
             behavior_total_benchmark_data.forEach(item => {
                 // Convert string values to numbers for proper sorting
-                item.avg_acc = parseFloat(item.avg_acc);
-                item.notebook_avg = parseFloat(item.notebook_avg);
-                item.notebook_math = parseFloat(item.notebook_math);
-                item.notebook_physics = parseFloat(item.notebook_physics);
-                item.notebook_chemistry = parseFloat(item.notebook_chemistry);
-                item.quiz_avg = parseFloat(item.quiz_avg);
-                item.quiz_math = parseFloat(item.quiz_math);
-                item.quiz_physics = parseFloat(item.quiz_physics);
-                item.quiz_chemistry = parseFloat(item.quiz_chemistry);
+                if (typeof item.avg_acc === 'string') {
+                    item.avg_acc = parseFloat(item.avg_acc) || 0;
+                }
+                if (typeof item.notebook_avg === 'string') {
+                    item.notebook_avg = parseFloat(item.notebook_avg) || 0;
+                }
+                if (typeof item.notebook_math === 'string') {
+                    item.notebook_math = parseFloat(item.notebook_math) || 0;
+                }
+                if (typeof item.notebook_physics === 'string') {
+                    item.notebook_physics = parseFloat(item.notebook_physics) || 0;
+                }
+                if (typeof item.notebook_chemistry === 'string') {
+                    item.notebook_chemistry = parseFloat(item.notebook_chemistry) || 0;
+                }
+                if (typeof item.quiz_avg === 'string') {
+                    item.quiz_avg = parseFloat(item.quiz_avg) || 0;
+                }
+                if (typeof item.quiz_math === 'string') {
+                    item.quiz_math = parseFloat(item.quiz_math) || 0;
+                }
+                if (typeof item.quiz_physics === 'string') {
+                    item.quiz_physics = parseFloat(item.quiz_physics) || 0;
+                }
+                if (typeof item.quiz_chemistry === 'string') {
+                    item.quiz_chemistry = parseFloat(item.quiz_chemistry) || 0;
+                }
             });
 
             var behavior_table = new Tabulator("#behavior-benchmark-main-table", {
@@ -288,11 +298,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     headerWordWrap: true,
                 },
                 columns: behavior_columns,
-                // rowFormatter: function(row) {
-                //     if (row.getData().model === "AuroraCap-7B") {
-                //         row.getElement().style.fontWeight = "bold";
-                //     }
-                // },
             });
         });
 })
