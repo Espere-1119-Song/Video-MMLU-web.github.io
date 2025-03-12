@@ -71,7 +71,7 @@ function createColorFormatter(startColor, endColor) {
 // 为每种类型定义不同的颜色
 const colorFormatterAvg = createColorFormatter(
     { r: 255, g: 255, b: 255 },  // 开始颜色（白色）
-    { r: 215, g: 240, b: 246 }   // 结束颜色（灰色）
+    { r: 215, g: 240, b: 246 }   // 结束颜色（浅蓝色）
 );
 
 const colorFormatterGoalInt = createColorFormatter(
@@ -213,6 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     field: "avg_acc",
                     widthGrow: 0.9,
                     minWidth: 60,
+                    formatter: colorFormatterAvg,
                     sorter: function(a, b, aRow, bRow, column, dir, sorterParams){
                         // Convert to numbers for proper sorting
                         var a_val = parseFloat(a) || 0;
