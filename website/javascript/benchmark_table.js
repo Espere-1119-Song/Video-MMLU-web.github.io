@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             var behavior_columns = [
                 {
-                    title: "Model<br>Family",
+                    title: "Model",
                     field: "model",
                     widthGrow: 4,
                     minWidth: 160
@@ -220,13 +220,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     title: "TPF",
                     field: "tpf",
                     widthGrow: 0.9,
-                    minWidth: 90
+                    minWidth: 50
                 },
                 {
                     title: "Overall",
-                    columns: [
-                        { title: "Acc.", field: "avg_acc", hozAlign: "center", formatter: colorFormatterAvg, minWidth: 50 },
-                    ]
+                    field: "avg_acc",
+                    widthGrow: 0.9,
+                    minWidth: 50
                 },
                 {
                     title: "Notebook",
