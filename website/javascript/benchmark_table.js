@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     title: "Overall",
                     field: "avg_acc",
                     widthGrow: 0.9,
-                    minWidth: 60,
+                    minWidth: 70,
                     formatter: colorFormatterAvg,
                     sorter: function(a, b, aRow, bRow, column, dir, sorterParams){
                         // Convert to numbers for proper sorting
