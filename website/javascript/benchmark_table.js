@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     title: "Model",
                     field: "model",
                     widthGrow: 4,
-                    minWidth: 110
+                    minWidth: 90
                 },
                 {
                     title: "# F",
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     title: "Overall",
                     field: "avg_acc",
                     widthGrow: 0.9,
-                    minWidth: 50,
+                    minWidth: 60,
                     sorter: function(a, b, aRow, bRow, column, dir, sorterParams){
                         // Convert to numbers for proper sorting
                         var a_val = parseFloat(a) || 0;
@@ -223,10 +223,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 {
                     title: "<div style='text-align: center;'>Notebook</div>",
                     columns: [
-                        { title: "Avg.", field: "notebook_avg", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
-                        { title: "Math", field: "notebook_math", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
-                        { title: "Physics", field: "notebook_physics", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
-                        { title: "Chemistry", field: "notebook_chemistry", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
+                        { title: "Avg.", field: "notebook_avg", hozAlign: "center", formatter: colorFormatterAvg, minWidth: 50 },
+                        { title: "Math", field: "notebook_math", hozAlign: "center", formatter: colorFormatterAvg, minWidth: 50 },
+                        { title: "Physics", field: "notebook_physics", hozAlign: "center", formatter: colorFormatterAvg, minWidth: 50 },
+                        { title: "Chemistry", field: "notebook_chemistry", hozAlign: "center", formatter: colorFormatterAvg, minWidth: 50 },
                     ]
                 },
                 {
