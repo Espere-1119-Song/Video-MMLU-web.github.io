@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     minWidth: 50
                 },
                 {
-                    title: "Notebook",
+                    title: "<div style='text-align: center;'>Notebook</div>",
                     columns: [
                         { title: "Avg.", field: "notebook_avg", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
                         { title: "Math", field: "notebook_math", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     ]
                 },
                 {
-                    title: "Quiz",
+                    title: "<div style='text-align: center;'>Quiz</div>",
                     columns: [
                         { title: "Avg.", field: "quiz_avg", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
                         { title: "Math", field: "quiz_math", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
