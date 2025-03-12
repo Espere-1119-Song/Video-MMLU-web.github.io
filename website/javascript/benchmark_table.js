@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 {
                     title: "Model<br>Family",
                     field: "model",
-                    widthGrow: 1.5,
+                    widthGrow: 4,
                     minWidth: 160
                 },
                 {
@@ -223,45 +223,27 @@ document.addEventListener('DOMContentLoaded', function () {
                     minWidth: 90
                 },
                 {
-                    title: "Avg. VDCscore",
+                    title: "Overall",
                     columns: [
                         { title: "Acc.", field: "avg_acc", hozAlign: "center", formatter: colorFormatterAvg, minWidth: 50 },
-                        { title: "Score", field: "avg_score", hozAlign: "center", formatter: colorFormatterAvg, minWidth: 70 },
                     ]
                 },
                 {
-                    title: "Detailed",
+                    title: "Notebook",
                     columns: [
-                        { title: "Acc.", field: "detailed_acc", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
-                        { title: "Score", field: "detailed_score", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 70 },
+                        { title: "Avg.", field: "notebook_avg", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
+                        { title: "Math", field: "notebook_math", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
+                        { title: "Physics", field: "notebook_physics", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
+                        { title: "Chemistry", field: "notebook_chemistry", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
                     ]
                 },
                 {
-                    title: "Camera",
+                    title: "Quiz",
                     columns: [
-                        { title: "Acc.", field: "camera_acc", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
-                        { title: "Score", field: "camera_score", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 70 },
-                    ]
-                },
-                {
-                    title: "Short",
-                    columns: [
-                        { title: "Acc.", field: "short_acc", hozAlign: "center", formatter: colorFormatterSubgoal, minWidth: 50 },
-                        { title: "Score", field: "short_score", hozAlign: "center", formatter: colorFormatterSubgoal, minWidth: 70 },
-                    ]
-                },
-                {
-                    title: "Background",
-                    columns: [
-                        { title: "Acc.", field: "background_acc", hozAlign: "center", formatter: colorFormatterTrans, minWidth: 50 },
-                        { title: "Score", field: "background_score", hozAlign: "center", formatter: colorFormatterTrans, minWidth: 70 },
-                    ]
-                },
-                {
-                    title: "Object",
-                    columns: [
-                        { title: "Acc.", field: "object_acc", hozAlign: "center", formatter: colorFormatterObject, minWidth: 50 },
-                        { title: "Score", field: "object_score", hozAlign: "center", formatter: colorFormatterObject, minWidth: 70 },
+                        { title: "Avg.", field: "quiz_avg", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
+                        { title: "Math", field: "quiz_math", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
+                        { title: "Physics", field: "quiz_physics", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
+                        { title: "Chemistry", field: "quiz_chemistry", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
                     ]
                 }
             ];
@@ -292,11 +274,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     headerWordWrap: true,
                 },
                 columns: behavior_columns,
-                rowFormatter: function(row) {
-                    if (row.getData().model === "AuroraCap-7B") {
-                        row.getElement().style.fontWeight = "bold";
-                    }
-                },
+                // rowFormatter: function(row) {
+                //     if (row.getData().model === "AuroraCap-7B") {
+                //         row.getElement().style.fontWeight = "bold";
+                //     }
+                // },
             });
         });
 })
