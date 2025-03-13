@@ -207,10 +207,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const scrollSpeed = 1; // 每次移动的像素数
         const scrollInterval = 30; // 滚动间隔（毫秒）
         let scrollIntervalId;
-        let isPaused = false;
+        let isPaused = false; // 添加暂停状态变量
         
         function startContinuousScroll() {
-            if (isPaused) return;
+            if (isPaused) return; // 如果处于暂停状态，不启动滚动
             
             scrollIntervalId = setInterval(function() {
                 position -= scrollSpeed;
@@ -282,7 +282,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // 恢复自动滚动
-            startContinuousScroll();
+            if (!isPaused) {
+                startContinuousScroll();
+            }
         });
         
         // 处理按钮点击事件
@@ -298,6 +300,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // 更改容器光标样式
                 carouselContainer.style.cursor = "default";
+                
+                console.log("Button clicked, carousel paused");
             });
         });
         
@@ -325,6 +329,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 isPaused = false;
                 carouselContainer.style.cursor = "grab";
                 startContinuousScroll();
+                console.log("Clicked outside, carousel resumed");
             }
         });
         
