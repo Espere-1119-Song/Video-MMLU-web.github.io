@@ -198,33 +198,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     contentContainer.style.maxHeight = "none"; // 移除最大高度限制
                     contentContainer.style.overflowY = "visible"; // 允许内容溢出
                     
-                    // 将按钮和内容添加到折叠容器
+                    // 将按钮添加到折叠容器
                     collapsibleContainer.appendChild(button);
+                    
+                    // 将内容容器添加到折叠容器
                     collapsibleContainer.appendChild(contentContainer);
                     
                     // 添加按钮点击事件
                     button.addEventListener("click", function() {
                         // 切换内容显示状态
                         if (contentContainer.style.display === "none") {
-                            // 关闭所有其他折叠内容
-                            const allContents = carouselContainer.querySelectorAll('.collapse-content');
-                            allContents.forEach(item => {
-                                if (item !== contentContainer) {
-                                    item.style.display = "none";
-                                    
-                                    // 更新对应按钮的图标
-                                    const parentButton = item.previousElementSibling;
-                                    if (parentButton) {
-                                        const icon = parentButton.querySelector('.fas');
-                                        if (icon) {
-                                            icon.classList.remove('fa-angle-up');
-                                            icon.classList.add('fa-angle-down');
-                                        }
-                                    }
-                                }
-                            });
-                            
-                            // 显示当前内容
+                            // 显示内容
                             contentContainer.style.display = "block";
                             
                             // 更新图标
@@ -256,24 +240,23 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     });
                     
-                    // 将视频包装器和折叠容器添加到视频项
+                    // 将折叠容器添加到视频项
                     videoItem.appendChild(videoWrapper);
                     videoItem.appendChild(collapsibleContainer);
-                    
-                    // 将视频项添加到数组
-                    videoItems.push(videoItem);
                 }
             }
+            
+            // 将视频项添加到数组
+            videoItems.push(videoItem);
+            
+            // 将视频项添加到轮播轨道
+            carouselTrack.appendChild(videoItem);
         });
         
-        // 计算轮播轨道的总宽度
+        // 计算原始轨道宽度
         const itemWidth = 620; // 每个视频项宽度为600px + 左右边距20px
         const originalTrackWidth = videoItems.length * itemWidth;
-        
-        // 将视频项添加到轮播轨道
-        videoItems.forEach(item => {
-            carouselTrack.appendChild(item);
-        });
+        carouselTrack.style.width = `${originalTrackWidth}px`;
         
         // 复制所有视频项并添加到轨道末尾，实现无缝循环
         if (videoItems.length > 0) {
@@ -288,25 +271,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     clonedButton.addEventListener("click", function() {
                         // 切换内容显示状态
                         if (clonedContent.style.display === "none") {
-                            // 关闭所有其他折叠内容
-                            const allContents = carouselContainer.querySelectorAll('.collapse-content');
-                            allContents.forEach(item => {
-                                if (item !== clonedContent) {
-                                    item.style.display = "none";
-                                    
-                                    // 更新对应按钮的图标
-                                    const parentButton = item.previousElementSibling;
-                                    if (parentButton) {
-                                        const icon = parentButton.querySelector('.fas');
-                                        if (icon) {
-                                            icon.classList.remove('fa-angle-up');
-                                            icon.classList.add('fa-angle-down');
-                                        }
-                                    }
-                                }
-                            });
-                            
-                            // 显示当前内容
+                            // 显示内容
                             clonedContent.style.display = "block";
                             
                             // 更新图标
