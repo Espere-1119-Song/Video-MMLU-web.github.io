@@ -206,11 +206,15 @@ document.addEventListener('DOMContentLoaded', function() {
         let position = 0;
         const scrollSpeed = 1; // 每次移动的像素数
         const scrollInterval = 30; // 滚动间隔（毫秒）
-        let scrollIntervalId;
-        let isPaused = false; // 添加暂停状态变量
+        let scrollIntervalId = null;
+        let isDragging = false;
+        let startPosition = 0;
+        let isPaused = false;
         
         function startContinuousScroll() {
-            if (isPaused) return; // 如果处于暂停状态，不启动滚动
+            if (scrollIntervalId) {
+                clearInterval(scrollIntervalId);
+            }
             
             scrollIntervalId = setInterval(function() {
                 position -= scrollSpeed;
@@ -228,20 +232,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         function stopScroll() {
-            clearInterval(scrollIntervalId);
+            if (scrollIntervalId) {
+                clearInterval(scrollIntervalId);
+                scrollIntervalId = null;
+            }
         }
         
-        // 添加鼠标拖动功能
-        let isDragging = false;
-        let startPosition = 0;
-        let startX = 0;
-        
+        // 鼠标拖动功能
         carouselContainer.addEventListener('mousedown', function(e) {
             if (isPaused) return; // 如果已暂停，不允许拖动
             
             isDragging = true;
             startPosition = position;
-            startX = e.clientX;
+            let startX = e.clientX;
             carouselTrack.style.transition = 'none'; // 拖动时禁用过渡效果
             carouselContainer.style.cursor = 'grabbing'; // 更改光标为抓取中
             
@@ -287,49 +290,100 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // 处理按钮点击事件
-        const allButtons = carouselTrack.querySelectorAll("button");
-        allButtons.forEach(button => {
-            button.addEventListener("click", function(e) {
-                // 停止滚动
-                stopScroll();
-                isPaused = true;
+        // 处理折叠部分的显示/隐藏
+        function setupCollapsibleSections() {
+            const allToggleButtons = carouselTrack.querySelectorAll('.toggle-section');
+            
+            allToggleButtons.forEach(button => {
+                // 获取对应的折叠内容
+                const targetId = button.getAttribute('aria-controls');
+                const targetContent = carouselTrack.querySelector('#' + targetId);
                 
-                // 阻止事件冒泡，防止点击事件传递到document
-                e.stopPropagation();
-                
-                // 更改容器光标样式
-                carouselContainer.style.cursor = "default";
-                
-                console.log("Button clicked, carousel paused");
+                if (targetContent) {
+                    // 初始状态为隐藏
+                    targetContent.style.display = 'none';
+                    
+                    // 添加点击事件
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // 停止滚动
+                        stopScroll();
+                        isPaused = true;
+                        
+                        // 切换折叠内容的显示状态
+                        if (targetContent.style.display === 'none') {
+                            targetContent.style.display = 'block';
+                            // 更改按钮图标
+                            const icon = button.querySelector('.fa-angle-down');
+                            if (icon) {
+                                icon.classList.remove('fa-angle-down');
+                                icon.classList.add('fa-angle-up');
+                            }
+                        } else {
+                            targetContent.style.display = 'none';
+                            // 更改按钮图标
+                            const icon = button.querySelector('.fa-angle-up');
+                            if (icon) {
+                                icon.classList.remove('fa-angle-up');
+                                icon.classList.add('fa-angle-down');
+                            }
+                        }
+                        
+                        // 更改容器光标样式
+                        carouselContainer.style.cursor = "default";
+                        
+                        console.log("Toggle button clicked, content toggled, carousel paused");
+                    });
+                }
             });
-        });
+        }
+        
+        // 设置折叠部分
+        setupCollapsibleSections();
         
         // 点击其他地方恢复滚动
         document.addEventListener("click", function(e) {
             // 检查点击是否在按钮或折叠内容区域内
+            let isClickInsideCarousel = carouselContainer.contains(e.target);
             let isClickInsideButton = false;
             let isClickInsideCollapsible = false;
             
-            allButtons.forEach(button => {
+            const allToggleButtons = carouselTrack.querySelectorAll('.toggle-section');
+            allToggleButtons.forEach(button => {
                 if (button.contains(e.target)) {
                     isClickInsideButton = true;
                 }
             });
             
-            const collapsibleSections = carouselTrack.querySelectorAll(".collapsible-section");
+            const collapsibleSections = carouselTrack.querySelectorAll(".collapse-content");
             collapsibleSections.forEach(section => {
                 if (section.contains(e.target)) {
                     isClickInsideCollapsible = true;
                 }
             });
             
-            // 如果点击不在按钮或折叠内容区域内，恢复滚动
-            if (!isClickInsideButton && !isClickInsideCollapsible && isPaused) {
+            // 如果点击在轮播内但不在按钮或折叠内容区域内，恢复滚动
+            if (isClickInsideCarousel && !isClickInsideButton && !isClickInsideCollapsible && isPaused) {
+                // 隐藏所有折叠内容
+                collapsibleSections.forEach(section => {
+                    section.style.display = 'none';
+                });
+                
+                // 重置所有按钮图标
+                allToggleButtons.forEach(button => {
+                    const icon = button.querySelector('.fa-angle-up');
+                    if (icon) {
+                        icon.classList.remove('fa-angle-up');
+                        icon.classList.add('fa-angle-down');
+                    }
+                });
+                
                 isPaused = false;
                 carouselContainer.style.cursor = "grab";
                 startContinuousScroll();
-                console.log("Clicked outside, carousel resumed");
+                console.log("Clicked outside content, carousel resumed");
             }
         });
         
