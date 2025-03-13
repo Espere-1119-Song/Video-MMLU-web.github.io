@@ -167,15 +167,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     const content = clonedCollapsible.querySelector(".collapse-content");
                     
                     if (button && content) {
-                        // 设置按钮样式 - 放在视频下方
-                        button.style.width = "100%";
+                        // 设置按钮样式 - 放在视频下方，与视频宽度一致
+                        button.style.width = "600px"; // 与视频宽度一致
                         button.style.maxWidth = "600px";
                         button.style.margin = "10px auto 0";
                         button.style.borderRadius = "4px";
+                        button.style.boxSizing = "border-box";
                         
                         // 设置内容样式 - 允许完全显示
                         content.style.display = "none"; // 初始隐藏
-                        content.style.width = "100%";
+                        content.style.width = "600px"; // 与视频宽度一致
                         content.style.maxWidth = "600px";
                         content.style.backgroundColor = "white";
                         content.style.padding = "15px";
@@ -185,6 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         content.style.zIndex = "100"; // 确保内容在顶层
                         content.style.maxHeight = "none"; // 移除最大高度限制
                         content.style.overflowY = "visible"; // 允许内容溢出
+                        content.style.boxSizing = "border-box";
                         
                         // 添加按钮点击事件
                         button.addEventListener("click", function() {
