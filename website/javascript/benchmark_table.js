@@ -443,10 +443,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     headerWordWrap: true,
                 },
                 columns: behavior_columns,
-                pagination: true,
-                paginationSize: 20,
-                paginationSizeSelector: [10, 20, 50, 100],
-                paginationCounter: "rows",
+                height: "400px", // Set a fixed height for the table
+                virtualDom: true, // Enable virtual DOM for better performance with large datasets
+                // Pagination removed and replaced with scrolling configuration
             });
         });
 })
