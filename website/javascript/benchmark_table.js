@@ -431,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             var behavior_table = new Tabulator("#behavior-benchmark-main-table", {
                 data: behavior_total_benchmark_data,
-                layout: "fitDataTable", // Use fitDataTable for horizontal scrolling
+                layout: "fitColumns",
                 responsiveLayout: "collapse",
                 responsiveLayoutCollapseStartOpen: false,
                 movableColumns: false,
@@ -443,55 +443,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     headerWordWrap: true,
                 },
                 columns: behavior_columns,
-                height: "400px", // Fixed height
-                virtualDom: true,
-            });
-            
-            // Add auto-scrolling functionality after table is fully rendered
-            behavior_table.on("tableBuilt", function(){
-                // Get the table element
-                const tableEl = document.getElementById("behavior-benchmark-main-table");
-                const tableWrapper = tableEl.querySelector(".tabulator-tableholder");
-                
-                // Variables for auto-scrolling
-                let scrollAmount = 0;
-                const scrollSpeed = 1; // Pixels per interval
-                let scrollInterval;
-                let scrollDirection = 1; // 1 for right, -1 for left
-                let maxScroll;
-                
-                // Start auto-scrolling
-                function startAutoScroll() {
-                    scrollInterval = setInterval(function() {
-                        maxScroll = tableWrapper.scrollWidth - tableWrapper.clientWidth;
-                        
-                        // Update scroll position
-                        scrollAmount += (scrollSpeed * scrollDirection);
-                        
-                        // Change direction when reaching the end
-                        if (scrollAmount >= maxScroll) {
-                            scrollDirection = -1;
-                        } else if (scrollAmount <= 0) {
-                            scrollDirection = 1;
-                        }
-                        
-                        // Apply scroll
-                        tableWrapper.scrollLeft = scrollAmount;
-                    }, 30); // Adjust interval for smoother/faster scrolling
-                }
-                
-                // Pause scrolling when hovering
-                tableWrapper.addEventListener("mouseenter", function() {
-                    clearInterval(scrollInterval);
-                });
-                
-                // Resume scrolling when mouse leaves
-                tableWrapper.addEventListener("mouseleave", function() {
-                    startAutoScroll();
-                });
-                
-                // Start scrolling initially
-                startAutoScroll();
+                height: "800px", // Set a fixed height for the table
+                virtualDom: true, // Enable virtual DOM for better performance with large datasets
+                // Pagination removed and replaced with scrolling configuration
             });
         });
 })
