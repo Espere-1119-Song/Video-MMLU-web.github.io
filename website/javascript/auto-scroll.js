@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
         carouselContainer.style.padding = "20px";
         carouselContainer.style.boxSizing = "border-box";
         carouselContainer.style.border = "none"; // 确保没有边框
+        carouselContainer.style.cursor = "grab"; // 显示抓取光标
         
         // 创建轮播轨道 - 为了实现连续滚动，我们需要复制视频
         const carouselTrack = document.createElement("div");
@@ -109,6 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
         carouselTrack.style.height = "100%";
         carouselTrack.style.padding = "20px";
         carouselTrack.style.boxSizing = "border-box";
+        carouselTrack.style.transition = "transform 0.3s ease"; // 添加平滑过渡效果
         
         // 计算每个视频项的宽度 - 我们希望同时显示2-3个视频
         const itemsToShow = videoCells.length >= 3 ? 3 : 2; // 如果有3个或更多视频，显示3个，否则显示2个
@@ -204,9 +206,10 @@ document.addEventListener('DOMContentLoaded', function() {
         let position = 0;
         const scrollSpeed = 1; // 每次移动的像素数
         const scrollInterval = 30; // 滚动间隔（毫秒）
+        let scrollIntervalId;
         
         function startContinuousScroll() {
-            setInterval(function() {
+            scrollIntervalId = setInterval(function() {
                 position -= scrollSpeed;
                 
                 // 当第一组视频完全滚出视图时，重置位置到开始
@@ -220,6 +223,80 @@ document.addEventListener('DOMContentLoaded', function() {
                 carouselTrack.style.transform = `translateX(${position}px)`;
             }, scrollInterval);
         }
+        
+        // 添加鼠标拖动功能
+        let isDragging = false;
+        let startPosition = 0;
+        let startX = 0;
+        
+        carouselContainer.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            startPosition = position;
+            startX = e.clientX;
+            carouselTrack.style.transition = 'none'; // 拖动时禁用过渡效果
+            carouselContainer.style.cursor = 'grabbing'; // 更改光标为抓取中
+            
+            // 暂停自动滚动
+            clearInterval(scrollIntervalId);
+            
+            // 防止拖动时选中文本
+            e.preventDefault();
+        });
+        
+        document.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+            
+            const dx = e.clientX - startX;
+            position = startPosition + dx;
+            
+            // 应用新位置
+            carouselTrack.style.transform = `translateX(${position}px)`;
+        });
+        
+        document.addEventListener('mouseup', function() {
+            if (!isDragging) return;
+            
+            isDragging = false;
+            carouselTrack.style.transition = 'transform 0.3s ease'; // 恢复过渡效果
+            carouselContainer.style.cursor = 'grab'; // 恢复光标
+            
+            // 检查是否需要重置位置
+            const itemWidthPx = carouselTrack.offsetWidth / totalItems;
+            const resetPoint = -(itemWidthPx * allVideoCells.length);
+            
+            if (position <= resetPoint) {
+                position = 0;
+                carouselTrack.style.transform = `translateX(${position}px)`;
+            } else if (position > 0) {
+                position = resetPoint;
+                carouselTrack.style.transform = `translateX(${position}px)`;
+            }
+            
+            // 恢复自动滚动
+            startContinuousScroll();
+        });
+        
+        // 防止拖动过程中失去鼠标焦点
+        document.addEventListener('mouseleave', function() {
+            if (isDragging) {
+                isDragging = false;
+                carouselTrack.style.transition = 'transform 0.3s ease';
+                carouselContainer.style.cursor = 'grab';
+                startContinuousScroll();
+            }
+        });
+        
+        // 鼠标悬停时暂停滚动
+        carouselContainer.addEventListener("mouseenter", function() {
+            clearInterval(scrollIntervalId);
+        });
+        
+        // 鼠标离开时恢复滚动
+        carouselContainer.addEventListener("mouseleave", function() {
+            if (!isDragging) {
+                startContinuousScroll();
+            }
+        });
         
         // 启动连续滚动
         startContinuousScroll();
