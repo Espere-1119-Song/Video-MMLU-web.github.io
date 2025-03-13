@@ -99,22 +99,32 @@ document.addEventListener('DOMContentLoaded', function() {
         carouselContainer.style.boxSizing = "border-box";
         carouselContainer.style.border = "none"; // 确保没有边框
         
-        // 创建轮播轨道
+        // 创建轮播轨道 - 为了实现连续滚动，我们需要复制视频
         const carouselTrack = document.createElement("div");
         carouselTrack.className = "video-carousel-track";
         carouselTrack.style.display = "flex";
-        carouselTrack.style.transition = "transform 0.5s ease";
-        carouselTrack.style.width = (videoCells.length * 100) + "%"; // 足够容纳所有视频
+        carouselTrack.style.position = "absolute";
+        carouselTrack.style.left = "0";
+        carouselTrack.style.top = "0";
         carouselTrack.style.height = "100%";
+        carouselTrack.style.padding = "20px";
+        carouselTrack.style.boxSizing = "border-box";
+        
+        // 计算每个视频项的宽度 - 我们希望同时显示2-3个视频
+        const itemsToShow = videoCells.length >= 3 ? 3 : 2; // 如果有3个或更多视频，显示3个，否则显示2个
+        const itemWidth = 100 / itemsToShow; // 百分比宽度
+        
+        // 为了实现无缝滚动，我们需要复制视频
+        const allVideoCells = [...videoCells];
         
         // 将每个视频单元格添加到轮播轨道
-        videoCells.forEach(cell => {
+        allVideoCells.forEach(cell => {
             const videoItem = document.createElement("div");
             videoItem.className = "video-carousel-item";
-            videoItem.style.flex = "1 0 auto";
+            videoItem.style.flex = "0 0 auto";
             videoItem.style.padding = "10px";
             videoItem.style.boxSizing = "border-box";
-            videoItem.style.width = (100 / videoCells.length) + "%";
+            videoItem.style.width = itemWidth + "%";
             videoItem.style.height = "100%";
             videoItem.style.display = "flex";
             videoItem.style.flexDirection = "column";
@@ -144,140 +154,75 @@ document.addEventListener('DOMContentLoaded', function() {
             carouselTrack.appendChild(videoItem);
         });
         
+        // 为了实现无缝滚动，再复制一组视频
+        allVideoCells.forEach(cell => {
+            const videoItem = document.createElement("div");
+            videoItem.className = "video-carousel-item";
+            videoItem.style.flex = "0 0 auto";
+            videoItem.style.padding = "10px";
+            videoItem.style.boxSizing = "border-box";
+            videoItem.style.width = itemWidth + "%";
+            videoItem.style.height = "100%";
+            videoItem.style.display = "flex";
+            videoItem.style.flexDirection = "column";
+            videoItem.style.justifyContent = "center";
+            videoItem.style.alignItems = "center";
+            
+            videoItem.innerHTML = cell.innerHTML;
+            
+            const video = videoItem.querySelector("video");
+            if (video) {
+                video.style.maxHeight = "400px";
+                video.style.width = "auto";
+                video.style.margin = "0 auto";
+                video.style.display = "block";
+                video.style.objectFit = "contain";
+            }
+            
+            const collapsibleSection = videoItem.querySelector(".collapsible-section");
+            if (collapsibleSection) {
+                collapsibleSection.style.width = "100%";
+                collapsibleSection.style.marginTop = "10px";
+            }
+            
+            carouselTrack.appendChild(videoItem);
+        });
+        
+        // 设置轨道总宽度
+        const totalItems = allVideoCells.length * 2; // 原始视频数量的两倍
+        carouselTrack.style.width = (totalItems * itemWidth) + "%";
+        
         // 将轨道添加到容器
         carouselContainer.appendChild(carouselTrack);
         
         // 用轮播替换表格
         existingTable.parentNode.replaceChild(carouselContainer, existingTable);
         
-        console.log("Video carousel created");
+        console.log("Video carousel created with continuous scrolling");
         
-        // 设置自动滚动
-        let currentPosition = 0;
-        const totalItems = videoCells.length;
-        const scrollSpeed = 3000; // 每个视频显示时间（毫秒）
-        let scrollInterval;
+        // 设置从右向左的连续滚动
+        let position = 0;
+        const scrollSpeed = 1; // 每次移动的像素数
+        const scrollInterval = 30; // 滚动间隔（毫秒）
         
-        function startAutoScroll() {
-            scrollInterval = setInterval(function() {
-                currentPosition = (currentPosition + 1) % totalItems;
-                carouselTrack.style.transform = `translateX(-${(currentPosition * 100) / totalItems}%)`;
-            }, scrollSpeed);
+        function startContinuousScroll() {
+            setInterval(function() {
+                position -= scrollSpeed;
+                
+                // 当第一组视频完全滚出视图时，重置位置到开始
+                const itemWidthPx = carouselTrack.offsetWidth / totalItems;
+                const resetPoint = -(itemWidthPx * allVideoCells.length);
+                
+                if (position <= resetPoint) {
+                    position = 0;
+                }
+                
+                carouselTrack.style.transform = `translateX(${position}px)`;
+            }, scrollInterval);
         }
         
-        // 添加导航按钮
-        const prevButton = document.createElement("button");
-        prevButton.innerHTML = "&#10094;"; // 左箭头
-        prevButton.className = "carousel-nav-button prev";
-        prevButton.style.position = "absolute";
-        prevButton.style.top = "50%";
-        prevButton.style.left = "10px";
-        prevButton.style.transform = "translateY(-50%)";
-        prevButton.style.zIndex = "10";
-        prevButton.style.backgroundColor = "rgba(255,255,255,0.7)";
-        prevButton.style.border = "none";
-        prevButton.style.borderRadius = "50%";
-        prevButton.style.width = "40px";
-        prevButton.style.height = "40px";
-        prevButton.style.fontSize = "18px";
-        prevButton.style.cursor = "pointer";
-        
-        const nextButton = document.createElement("button");
-        nextButton.innerHTML = "&#10095;"; // 右箭头
-        nextButton.className = "carousel-nav-button next";
-        nextButton.style.position = "absolute";
-        nextButton.style.top = "50%";
-        nextButton.style.right = "10px";
-        nextButton.style.transform = "translateY(-50%)";
-        nextButton.style.zIndex = "10";
-        nextButton.style.backgroundColor = "rgba(255,255,255,0.7)";
-        nextButton.style.border = "none";
-        nextButton.style.borderRadius = "50%";
-        nextButton.style.width = "40px";
-        nextButton.style.height = "40px";
-        nextButton.style.fontSize = "18px";
-        nextButton.style.cursor = "pointer";
-        
-        carouselContainer.appendChild(prevButton);
-        carouselContainer.appendChild(nextButton);
-        
-        prevButton.addEventListener("click", function() {
-            currentPosition = (currentPosition - 1 + totalItems) % totalItems;
-            carouselTrack.style.transform = `translateX(-${(currentPosition * 100) / totalItems}%)`;
-            clearInterval(scrollInterval);
-            startAutoScroll();
-        });
-        
-        nextButton.addEventListener("click", function() {
-            currentPosition = (currentPosition + 1) % totalItems;
-            carouselTrack.style.transform = `translateX(-${(currentPosition * 100) / totalItems}%)`;
-            clearInterval(scrollInterval);
-            startAutoScroll();
-        });
-        
-        // 添加指示器点
-        const indicatorContainer = document.createElement("div");
-        indicatorContainer.className = "carousel-indicators";
-        indicatorContainer.style.position = "absolute";
-        indicatorContainer.style.bottom = "10px";
-        indicatorContainer.style.left = "50%";
-        indicatorContainer.style.transform = "translateX(-50%)";
-        indicatorContainer.style.display = "flex";
-        indicatorContainer.style.gap = "8px";
-        
-        for (let i = 0; i < totalItems; i++) {
-            const dot = document.createElement("div");
-            dot.className = "carousel-indicator-dot";
-            dot.style.width = "10px";
-            dot.style.height = "10px";
-            dot.style.borderRadius = "50%";
-            dot.style.backgroundColor = i === 0 ? "#4CAF50" : "rgba(255,255,255,0.7)";
-            dot.style.cursor = "pointer";
-            
-            dot.addEventListener("click", function() {
-                currentPosition = i;
-                carouselTrack.style.transform = `translateX(-${(currentPosition * 100) / totalItems}%)`;
-                // 更新所有点的颜色
-                indicatorContainer.querySelectorAll(".carousel-indicator-dot").forEach((d, index) => {
-                    d.style.backgroundColor = index === i ? "#4CAF50" : "rgba(255,255,255,0.7)";
-                });
-                clearInterval(scrollInterval);
-                startAutoScroll();
-            });
-            
-            indicatorContainer.appendChild(dot);
-        }
-        
-        carouselContainer.appendChild(indicatorContainer);
-        
-        // 更新指示器点的颜色
-        function updateIndicators() {
-            indicatorContainer.querySelectorAll(".carousel-indicator-dot").forEach((dot, index) => {
-                dot.style.backgroundColor = index === currentPosition ? "#4CAF50" : "rgba(255,255,255,0.7)";
-            });
-        }
-        
-        // 鼠标悬停时暂停滚动
-        carouselContainer.addEventListener("mouseenter", function() {
-            clearInterval(scrollInterval);
-        });
-        
-        // 鼠标离开时恢复滚动
-        carouselContainer.addEventListener("mouseleave", function() {
-            startAutoScroll();
-        });
-        
-        // 修改自动滚动函数以更新指示器
-        function startAutoScroll() {
-            scrollInterval = setInterval(function() {
-                currentPosition = (currentPosition + 1) % totalItems;
-                carouselTrack.style.transform = `translateX(-${(currentPosition * 100) / totalItems}%)`;
-                updateIndicators();
-            }, scrollSpeed);
-        }
-        
-        // 初始启动滚动
-        startAutoScroll();
+        // 启动连续滚动
+        startContinuousScroll();
     }
     
     // Initialize both scrolling features
