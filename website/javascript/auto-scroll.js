@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // 创建轮播容器 - 添加浅绿色透明背景和固定高度
+        // 创建轮播容器 - 保持浅绿色透明背景和固定高度
         const carouselContainer = document.createElement("div");
         carouselContainer.className = "video-carousel-container";
         carouselContainer.style.width = "100%";
@@ -187,16 +187,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     contentContainer.style.width = "600px";
                     contentContainer.style.maxWidth = "600px";
                     contentContainer.style.boxSizing = "border-box";
-                    contentContainer.style.backgroundColor = "white";
-                    contentContainer.style.padding = "15px";
-                    contentContainer.style.borderRadius = "0 0 8px 8px";
-                    contentContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
                     contentContainer.style.position = "absolute"; // 使用绝对定位
                     contentContainer.style.top = "100%"; // 放在按钮下方
                     contentContainer.style.left = "0";
                     contentContainer.style.zIndex = "999"; // 确保内容在最上层
+                    contentContainer.style.padding = "15px";
+                    contentContainer.style.borderRadius = "0 0 8px 8px"; // 底部圆角
+                    contentContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)"; // 添加阴影
                     contentContainer.style.maxHeight = "none"; // 移除最大高度限制
                     contentContainer.style.overflowY = "visible"; // 允许内容溢出
+                    contentContainer.style.backgroundColor = "#ffffff"; // 白色背景
+                    contentContainer.style.border = "1px solid #e0e0e0"; // 添加浅灰色边框
                     
                     // 将按钮添加到折叠容器
                     collapsibleContainer.appendChild(button);
@@ -243,27 +244,28 @@ document.addEventListener('DOMContentLoaded', function() {
                     // 将折叠容器添加到视频项
                     videoItem.appendChild(videoWrapper);
                     videoItem.appendChild(collapsibleContainer);
+                    
+                    // 将视频项添加到数组
+                    videoItems.push(videoItem);
                 }
             }
-            
-            // 将视频项添加到数组
-            videoItems.push(videoItem);
-            
-            // 将视频项添加到轮播轨道
-            carouselTrack.appendChild(videoItem);
         });
         
-        // 计算原始轨道宽度
-        const itemWidth = 620; // 每个视频项宽度为600px + 左右边距20px
-        const originalTrackWidth = videoItems.length * itemWidth;
-        carouselTrack.style.width = `${originalTrackWidth}px`;
+        // 计算轨道宽度
+        const itemWidth = 620; // 每个项的宽度（包括间距）
+        const originalTrackWidth = itemWidth * videoItems.length;
+        
+        // 将视频项添加到轨道
+        videoItems.forEach(item => {
+            carouselTrack.appendChild(item);
+        });
         
         // 复制所有视频项并添加到轨道末尾，实现无缝循环
         if (videoItems.length > 0) {
             videoItems.forEach(item => {
                 const clonedItem = item.cloneNode(true);
                 
-                // 为克隆项中的按钮添加事件监听器
+                // 为克隆项中的按钮添加点击事件
                 const clonedButton = clonedItem.querySelector('button');
                 const clonedContent = clonedItem.querySelector('.collapse-content');
                 
