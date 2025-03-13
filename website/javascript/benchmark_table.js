@@ -129,10 +129,14 @@ const simpleColorFormatter = function(cell, formatterParams) {
     // 简单格式化值
     const formattedValue = isNaN(numValue) ? value : numValue.toFixed(1);
     
+    // 紫色渐变的起始和结束颜色
+    const startColor = { r: 255, g: 255, b: 255 }; // 白色
+    const endColor = { r: 148, g: 153, b: 192 };   // 紫色
+    
     // 如果没有提供参数，使用固定颜色
     if (!formatterParams || formatterParams.min === undefined || formatterParams.max === undefined) {
         return `<div style="
-            background-color: rgb(148, 153, 192);
+            background-color: rgb(${endColor.r}, ${endColor.g}, ${endColor.b});
             padding: 4px;
             text-align: center;
             width: 100%;
@@ -147,7 +151,7 @@ const simpleColorFormatter = function(cell, formatterParams) {
     // 防止除以零
     if (min === max) {
         return `<div style="
-            background-color: rgb(148, 153, 192);
+            background-color: rgb(${endColor.r}, ${endColor.g}, ${endColor.b});
             padding: 4px;
             text-align: center;
             width: 100%;
@@ -158,9 +162,9 @@ const simpleColorFormatter = function(cell, formatterParams) {
     const intensity = Math.max(0, Math.min(1, (numValue - min) / (max - min)));
     
     // 从白色到紫色的渐变
-    const r = Math.floor(255 - (255 - 148) * intensity);
-    const g = Math.floor(255 - (255 - 153) * intensity);
-    const b = Math.floor(255 - (255 - 192) * intensity);
+    const r = Math.floor(startColor.r - (startColor.r - endColor.r) * intensity);
+    const g = Math.floor(startColor.g - (startColor.g - endColor.g) * intensity);
+    const b = Math.floor(startColor.b - (startColor.b - endColor.b) * intensity);
     
     return `<div style="
         background-color: rgb(${r}, ${g}, ${b});
