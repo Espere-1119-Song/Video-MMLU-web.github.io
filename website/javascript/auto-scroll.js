@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
         carouselContainer.style.width = "100%";
         carouselContainer.style.height = "450px"; // 调整容器高度
         carouselContainer.style.backgroundColor = "rgba(232, 245, 233, 0.6)"; // 浅绿色背景带透明度
-        carouselContainer.style.overflow = "visible"; // 允许内容溢出容器
+        carouselContainer.style.overflow = "hidden"; // 隐藏水平溢出内容，但允许垂直溢出
         carouselContainer.style.position = "relative";
         carouselContainer.style.margin = "0 auto";
         carouselContainer.style.borderRadius = "8px"; // 圆角
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
             videoItem.style.margin = "0 10px"; // 减小左右间距为10px
             videoItem.style.boxSizing = "border-box";
             videoItem.style.position = "relative";
-            videoItem.style.overflow = "visible"; // 允许内容溢出
+            videoItem.style.overflow = "visible"; // 允许垂直内容溢出
             
             // 创建视频包装器，控制视频宽度和高度
             const videoWrapper = document.createElement("div");
@@ -252,7 +252,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // 计算轮播轨道的总宽度
-        const trackWidth = videoItems.length * 620; // 每个视频项宽度为600px + 左右边距20px
+        const itemWidth = 620; // 每个视频项宽度为600px + 左右边距20px
+        const trackWidth = videoItems.length * itemWidth;
         carouselTrack.style.width = `${trackWidth}px`;
         
         // 将视频项添加到轮播轨道
@@ -322,8 +323,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // 确保滚动位置在有效范围内
             if (scrollPosition < 0) {
                 scrollPosition = 0;
-            } else if (scrollPosition > trackWidth) {
-                scrollPosition = trackWidth;
+            } else if (scrollPosition > trackWidth - carouselContainer.offsetWidth) {
+                scrollPosition = trackWidth - carouselContainer.offsetWidth;
             }
             
             carouselTrack.style.transform = `translateX(-${scrollPosition}px)`;
@@ -422,6 +423,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 启动连续滚动
         startContinuousScroll();
+        
+        console.log("Carousel initialized with width:", trackWidth, "px");
+        console.log("Container width:", carouselContainer.offsetWidth, "px");
+        console.log("Number of items:", videoItems.length);
     }
     
     // Initialize both scrolling features
