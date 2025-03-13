@@ -207,8 +207,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const scrollSpeed = 1; // 每次移动的像素数
         const scrollInterval = 30; // 滚动间隔（毫秒）
         let scrollIntervalId;
+        let isPaused = false;
         
         function startContinuousScroll() {
+            if (isPaused) return;
+            
             scrollIntervalId = setInterval(function() {
                 position -= scrollSpeed;
                 
@@ -224,12 +227,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }, scrollInterval);
         }
         
+        function stopScroll() {
+            clearInterval(scrollIntervalId);
+        }
+        
         // 添加鼠标拖动功能
         let isDragging = false;
         let startPosition = 0;
         let startX = 0;
         
         carouselContainer.addEventListener('mousedown', function(e) {
+            if (isPaused) return; // 如果已暂停，不允许拖动
+            
             isDragging = true;
             startPosition = position;
             startX = e.clientX;
@@ -237,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
             carouselContainer.style.cursor = 'grabbing'; // 更改光标为抓取中
             
             // 暂停自动滚动
-            clearInterval(scrollIntervalId);
+            stopScroll();
             
             // 防止拖动时选中文本
             e.preventDefault();
@@ -276,24 +285,71 @@ document.addEventListener('DOMContentLoaded', function() {
             startContinuousScroll();
         });
         
+        // 处理按钮点击事件
+        const allButtons = carouselTrack.querySelectorAll("button");
+        allButtons.forEach(button => {
+            button.addEventListener("click", function(e) {
+                // 停止滚动
+                stopScroll();
+                isPaused = true;
+                
+                // 阻止事件冒泡，防止点击事件传递到document
+                e.stopPropagation();
+                
+                // 更改容器光标样式
+                carouselContainer.style.cursor = "default";
+            });
+        });
+        
+        // 点击其他地方恢复滚动
+        document.addEventListener("click", function(e) {
+            // 检查点击是否在按钮或折叠内容区域内
+            let isClickInsideButton = false;
+            let isClickInsideCollapsible = false;
+            
+            allButtons.forEach(button => {
+                if (button.contains(e.target)) {
+                    isClickInsideButton = true;
+                }
+            });
+            
+            const collapsibleSections = carouselTrack.querySelectorAll(".collapsible-section");
+            collapsibleSections.forEach(section => {
+                if (section.contains(e.target)) {
+                    isClickInsideCollapsible = true;
+                }
+            });
+            
+            // 如果点击不在按钮或折叠内容区域内，恢复滚动
+            if (!isClickInsideButton && !isClickInsideCollapsible && isPaused) {
+                isPaused = false;
+                carouselContainer.style.cursor = "grab";
+                startContinuousScroll();
+            }
+        });
+        
         // 防止拖动过程中失去鼠标焦点
         document.addEventListener('mouseleave', function() {
             if (isDragging) {
                 isDragging = false;
                 carouselTrack.style.transition = 'transform 0.3s ease';
                 carouselContainer.style.cursor = 'grab';
-                startContinuousScroll();
+                if (!isPaused) {
+                    startContinuousScroll();
+                }
             }
         });
         
         // 鼠标悬停时暂停滚动
         carouselContainer.addEventListener("mouseenter", function() {
-            clearInterval(scrollIntervalId);
+            if (!isPaused) {
+                stopScroll();
+            }
         });
         
         // 鼠标离开时恢复滚动
         carouselContainer.addEventListener("mouseleave", function() {
-            if (!isDragging) {
+            if (!isDragging && !isPaused) {
                 startContinuousScroll();
             }
         });
