@@ -101,7 +101,7 @@ const colorFormatterAvg = createColorFormatter(
 
 const colorFormatterGoalInt = createColorFormatter(
     { r: 255, g: 255, b: 255 },  // 开始颜色（白色）
-    { r: 148, g: 153, b: 192 }   // 结束颜色（浅紫色）
+    { r: 255, g: 153, b: 153 }   // 结束颜色（浅红色）
 );
 
 const colorFormatterActionSeq = createColorFormatter(
@@ -109,6 +109,17 @@ const colorFormatterActionSeq = createColorFormatter(
     { r: 126, g: 197, b: 164 }   // 结束颜色（浅绿色）
 );
 
+// 添加调试版本的格式化器
+const debugColorFormatter = function(cell, formatterParams) {
+    const value = cell.getValue();
+    console.log("Quiz cell:", cell.getField(), "Value:", value, "Type:", typeof value);
+    console.log("FormatterParams:", formatterParams);
+    
+    // 使用原始格式化器
+    const result = colorFormatterGoalInt(cell, formatterParams);
+    console.log("Formatter result:", result);
+    return result;
+};
 
 document.addEventListener('DOMContentLoaded', function () {
     Promise.all([
@@ -274,10 +285,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             title: "Avg.", 
                             field: "quiz_avg", 
                             hozAlign: "center", 
-                            formatter: colorFormatterGoalInt, 
+                            formatter: debugColorFormatter, // 使用调试格式化器
                             minWidth: 50,
                             sorter: function(a, b, aRow, bRow, column, dir, sorterParams){
-                                // Convert to numbers for proper sorting
                                 var a_val = parseFloat(a) || 0;
                                 var b_val = parseFloat(b) || 0;
                                 return a_val - b_val;
