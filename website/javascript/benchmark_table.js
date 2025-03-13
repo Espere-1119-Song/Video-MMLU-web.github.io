@@ -121,21 +121,53 @@ const debugColorFormatter = function(cell, formatterParams) {
     return result;
 };
 
-// 创建一个简单的固定颜色格式化器
+// 创建一个简单的渐变颜色格式化器，使用紫色
 const simpleColorFormatter = function(cell, formatterParams) {
     const value = cell.getValue();
+    const numValue = typeof value === 'number' ? value : parseFloat(value);
     
     // 简单格式化值
-    const formattedValue = typeof value === 'number' ? value.toFixed(1) : value;
+    const formattedValue = isNaN(numValue) ? value : numValue.toFixed(1);
     
-    // 使用固定的背景颜色
+    // 如果没有提供参数，使用固定颜色
+    if (!formatterParams || formatterParams.min === undefined || formatterParams.max === undefined) {
+        return `<div style="
+            background-color: rgb(148, 153, 192);
+            padding: 4px;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        ">${formattedValue}</div>`;
+    }
+    
+    // 计算颜色强度 (0-1)
+    const min = formatterParams.min;
+    const max = formatterParams.max;
+    
+    // 防止除以零
+    if (min === max) {
+        return `<div style="
+            background-color: rgb(148, 153, 192);
+            padding: 4px;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        ">${formattedValue}</div>`;
+    }
+    
+    const intensity = Math.max(0, Math.min(1, (numValue - min) / (max - min)));
+    
+    // 从白色到紫色的渐变
+    const r = Math.floor(255 - (255 - 148) * intensity);
+    const g = Math.floor(255 - (255 - 153) * intensity);
+    const b = Math.floor(255 - (255 - 192) * intensity);
+    
     return `<div style="
-        background-color: #ffcccc;
+        background-color: rgb(${r}, ${g}, ${b});
         padding: 4px;
         text-align: center;
         width: 100%;
         height: 100%;
-        color: black;
     ">${formattedValue}</div>`;
 };
 
