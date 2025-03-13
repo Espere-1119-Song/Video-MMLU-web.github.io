@@ -41,17 +41,42 @@ function createColorFormatter(startColor, endColor) {
             return "-";
         }
 
+        // 确保值是数字类型
+        const numValue = typeof value === 'number' ? value : parseFloat(value);
+        
         // 格式化数值为一位小数
-        const formattedValue = typeof value === 'number' ? value.toFixed(1) : value;
+        const formattedValue = isNaN(numValue) ? value : numValue.toFixed(1);
         
         // 如果没有提供参数，直接返回格式化的值
-        if (!formatterParams || !formatterParams.min || !formatterParams.max) {
+        if (!formatterParams || !formatterParams.min === undefined || formatterParams.max === undefined) {
             return formattedValue;
         }
 
         const min = formatterParams.min;
         const max = formatterParams.max;
-        const normalizedValue = Math.max(0, Math.min(1, (value - min) / (max - min)));
+        
+        // 防止除以零的情况
+        if (min === max) {
+            // 如果最小值等于最大值，使用中间颜色
+            const red = Math.floor((startColor.r + endColor.r) / 2);
+            const green = Math.floor((startColor.g + endColor.g) / 2);
+            const blue = Math.floor((startColor.b + endColor.b) / 2);
+            
+            return `<div style="
+                background-color: rgb(${red}, ${green}, ${blue});
+                padding: 4px;
+                text-align: center;
+                width: 100%;
+                height: 100%;
+            ">${formattedValue}</div>`;
+        }
+        
+        const normalizedValue = Math.max(0, Math.min(1, (numValue - min) / (max - min)));
+        
+        // 确保 normalizedValue 是有效数字
+        if (isNaN(normalizedValue)) {
+            return formattedValue;
+        }
 
         // 计算颜色渐变
         const red = Math.floor(startColor.r + (endColor.r - startColor.r) * normalizedValue);
@@ -95,8 +120,20 @@ document.addEventListener('DOMContentLoaded', function () {
             behavior_total_benchmark_data,
         ]) => {
             var getColumnMinMax = (data, field) => {
-                let values = data.map(item => item[field]).filter(val => val !== "-").map(Number);
-                return { min: Math.min(...values), max: Math.max(...values) };
+                let values = data.map(item => item[field])
+                                 .filter(val => val !== "-" && val !== null && val !== undefined)
+                                 .map(val => typeof val === 'number' ? val : parseFloat(val))
+                                 .filter(val => !isNaN(val));
+                
+                if (values.length === 0) {
+                    return { min: 0, max: 1 }; // 提供默认值
+                }
+                
+                const min = Math.min(...values);
+                const max = Math.max(...values);
+                
+                // 如果 min 和 max 相等，稍微调整 max 值以避免除以零
+                return min === max ? { min, max: max + 0.1 } : { min, max };
             };
 
             // var virtualhome_columns = [
