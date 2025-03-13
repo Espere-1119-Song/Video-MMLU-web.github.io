@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
         carouselContainer.style.width = "100%";
         carouselContainer.style.height = "450px"; // 调整容器高度
         carouselContainer.style.backgroundColor = "rgba(232, 245, 233, 0.6)"; // 浅绿色背景带透明度
-        carouselContainer.style.overflow = "hidden"; // 隐藏水平溢出内容，但允许垂直溢出
+        carouselContainer.style.overflow = "hidden"; // 隐藏水平溢出内容
         carouselContainer.style.position = "relative";
         carouselContainer.style.margin = "0 auto";
         carouselContainer.style.borderRadius = "8px"; // 圆角
@@ -159,6 +159,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 获取折叠部分
                 const collapsibleSection = cell.querySelector(".collapsible-section");
                 if (collapsibleSection) {
+                    // 创建一个包含按钮和内容的容器
+                    const collapsibleContainer = document.createElement("div");
+                    collapsibleContainer.className = "collapsible-container";
+                    collapsibleContainer.style.width = "600px";
+                    collapsibleContainer.style.position = "relative";
+                    collapsibleContainer.style.marginTop = "10px";
+                    
                     // 克隆折叠部分
                     const clonedCollapsible = collapsibleSection.cloneNode(true);
                     
@@ -168,37 +175,45 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     if (button && content) {
                         // 设置按钮样式 - 放在视频下方，与视频宽度一致
-                        button.style.width = "600px"; // 与视频宽度一致
+                        button.style.width = "100%";
                         button.style.maxWidth = "600px";
-                        button.style.margin = "10px auto 0";
+                        button.style.margin = "0";
                         button.style.borderRadius = "4px";
                         button.style.boxSizing = "border-box";
                         
-                        // 设置内容样式 - 允许完全显示
-                        content.style.display = "none"; // 初始隐藏
-                        content.style.width = "600px"; // 与视频宽度一致
-                        content.style.maxWidth = "600px";
-                        content.style.backgroundColor = "white";
-                        content.style.padding = "15px";
-                        content.style.borderRadius = "4px";
-                        content.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
-                        content.style.marginTop = "10px";
-                        content.style.zIndex = "100"; // 确保内容在顶层
-                        content.style.maxHeight = "none"; // 移除最大高度限制
-                        content.style.overflowY = "visible"; // 允许内容溢出
-                        content.style.boxSizing = "border-box";
+                        // 从原始折叠部分中移除内容
+                        content.remove();
                         
-                        // 添加按钮点击事件
+                        // 将按钮添加到折叠容器
+                        collapsibleContainer.appendChild(button);
+                        
+                        // 创建一个新的内容容器，放在按钮下方
+                        const contentContainer = document.createElement("div");
+                        contentContainer.className = "collapse-content";
+                        contentContainer.innerHTML = content.innerHTML;
+                        contentContainer.style.display = "none"; // 初始隐藏
+                        contentContainer.style.width = "100%";
+                        contentContainer.style.backgroundColor = "white";
+                        contentContainer.style.padding = "15px";
+                        contentContainer.style.borderRadius = "4px";
+                        contentContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
+                        contentContainer.style.marginTop = "5px";
+                        contentContainer.style.boxSizing = "border-box";
+                        contentContainer.style.zIndex = "10";
+                        
+                        // 将内容容器添加到折叠容器
+                        collapsibleContainer.appendChild(contentContainer);
+                        
+                        // 添加点击事件处理程序
                         button.addEventListener("click", function() {
-                            // 切换内容显示状态
-                            if (content.style.display === "none") {
+                            if (contentContainer.style.display === "none") {
                                 // 关闭所有其他折叠内容
                                 const allContents = carouselContainer.querySelectorAll('.collapse-content');
                                 allContents.forEach(item => {
-                                    if (item !== content) {
+                                    if (item !== contentContainer) {
                                         item.style.display = "none";
                                         
-                                        // 更新对应按钮的图标
+                                        // 更新其他按钮的图标
                                         const parentButton = item.previousElementSibling;
                                         if (parentButton && parentButton.tagName === 'BUTTON') {
                                             const icon = parentButton.querySelector('.fas');
@@ -211,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 });
                                 
                                 // 显示当前内容
-                                content.style.display = "block";
+                                contentContainer.style.display = "block";
                                 
                                 // 更新图标
                                 const icon = button.querySelector('.fas');
@@ -226,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 carouselContainer.style.cursor = "default";
                             } else {
                                 // 隐藏内容
-                                content.style.display = "none";
+                                contentContainer.style.display = "none";
                                 
                                 // 更新图标
                                 const icon = button.querySelector('.fas');
@@ -245,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // 将视频包装器和折叠部分添加到视频项
                     videoItem.appendChild(videoWrapper);
-                    videoItem.appendChild(clonedCollapsible);
+                    videoItem.appendChild(collapsibleContainer);
                     
                     // 将视频项添加到数组
                     videoItems.push(videoItem);
@@ -262,6 +277,15 @@ document.addEventListener('DOMContentLoaded', function() {
         videoItems.forEach(item => {
             carouselTrack.appendChild(item);
         });
+        
+        // 复制第一个视频项并添加到轨道末尾，实现无缝循环
+        if (videoItems.length > 0) {
+            const firstItemClone = videoItems[0].cloneNode(true);
+            carouselTrack.appendChild(firstItemClone);
+            
+            // 更新轨道宽度以包含复制的项
+            carouselTrack.style.width = `${trackWidth + itemWidth}px`;
+        }
         
         // 将轮播轨道添加到轮播容器
         carouselContainer.appendChild(carouselTrack);
@@ -284,9 +308,18 @@ document.addEventListener('DOMContentLoaded', function() {
             scrollInterval = setInterval(() => {
                 scrollPosition += 1; // 每次滚动1像素
                 
-                // 当滚动到最右侧时，重置到开始位置
-                if (scrollPosition >= trackWidth - carouselContainer.offsetWidth) {
+                // 当滚动到最后一个视频（即第一个视频的克隆）的开始位置时，无缝跳回到真正的第一个视频位置
+                if (scrollPosition >= trackWidth) {
+                    // 暂时移除过渡效果，立即跳回到开始位置
+                    carouselTrack.style.transition = 'none';
                     scrollPosition = 0;
+                    carouselTrack.style.transform = `translateX(-${scrollPosition}px)`;
+                    
+                    // 强制重绘以确保过渡被移除
+                    void carouselTrack.offsetWidth;
+                    
+                    // 恢复过渡效果
+                    carouselTrack.style.transition = 'transform 0.3s ease';
                 }
                 
                 carouselTrack.style.transform = `translateX(-${scrollPosition}px)`;
@@ -325,8 +358,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // 确保滚动位置在有效范围内
             if (scrollPosition < 0) {
                 scrollPosition = 0;
-            } else if (scrollPosition > trackWidth - carouselContainer.offsetWidth) {
-                scrollPosition = trackWidth - carouselContainer.offsetWidth;
+            } else if (scrollPosition > trackWidth) {
+                scrollPosition = trackWidth;
             }
             
             carouselTrack.style.transform = `translateX(-${scrollPosition}px)`;
