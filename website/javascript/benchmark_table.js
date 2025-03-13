@@ -121,15 +121,50 @@ const debugColorFormatter = function(cell, formatterParams) {
     return result;
 };
 
-// 完全重写的紫色格式化器
+// 紫色渐变格式化器
 const simpleColorFormatter = function(cell, formatterParams) {
     const value = cell.getValue();
     const numValue = typeof value === 'number' ? value : parseFloat(value);
     const formattedValue = isNaN(numValue) ? value : numValue.toFixed(1);
     
-    // 使用固定的紫色 - 不使用任何渐变逻辑
+    // 如果没有有效的参数或值，使用固定的紫色
+    if (!formatterParams || formatterParams.min === undefined || formatterParams.max === undefined || isNaN(numValue)) {
+        return `<div style="
+            background-color: #9494C0;
+            padding: 4px;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            color: black;
+        ">${formattedValue}</div>`;
+    }
+    
+    // 计算渐变比例
+    const min = formatterParams.min;
+    const max = formatterParams.max;
+    
+    // 防止除以零
+    if (min === max) {
+        return `<div style="
+            background-color: #9494C0;
+            padding: 4px;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            color: black;
+        ">${formattedValue}</div>`;
+    }
+    
+    // 计算颜色强度 (0-1)
+    const intensity = Math.max(0, Math.min(1, (numValue - min) / (max - min)));
+    
+    // 从白色 (#FFFFFF) 到紫色 (#9494C0) 的渐变
+    const r = Math.floor(255 - (255 - 148) * intensity);
+    const g = Math.floor(255 - (255 - 148) * intensity);
+    const b = Math.floor(255 - (255 - 192) * intensity);
+    
     return `<div style="
-        background-color: #9494C0; /* 固定的紫色 */
+        background-color: rgb(${r}, ${g}, ${b});
         padding: 4px;
         text-align: center;
         width: 100%;
