@@ -233,10 +233,55 @@ document.addEventListener('DOMContentLoaded', function () {
                 {
                     title: "<div style='text-align: center;'>Quiz</div>",
                     columns: [
-                        { title: "Avg.", field: "quiz_avg", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
-                        { title: "Math", field: "quiz_math", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
-                        { title: "Physics", field: "quiz_physics", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
-                        { title: "Chemistry", field: "quiz_chemistry", hozAlign: "center", formatter: colorFormatterGoalInt, minWidth: 50 },
+                        { 
+                            title: "Avg.", 
+                            field: "quiz_avg", 
+                            hozAlign: "center", 
+                            formatter: colorFormatterGoalInt, 
+                            minWidth: 50,
+                            sorter: function(a, b, aRow, bRow, column, dir, sorterParams){
+                                // Convert to numbers for proper sorting
+                                var a_val = parseFloat(a) || 0;
+                                var b_val = parseFloat(b) || 0;
+                                return a_val - b_val;
+                            }
+                        },
+                        { 
+                            title: "Math", 
+                            field: "quiz_math", 
+                            hozAlign: "center", 
+                            formatter: colorFormatterGoalInt, 
+                            minWidth: 50,
+                            sorter: function(a, b, aRow, bRow, column, dir, sorterParams){
+                                var a_val = parseFloat(a) || 0;
+                                var b_val = parseFloat(b) || 0;
+                                return a_val - b_val;
+                            }
+                        },
+                        { 
+                            title: "Physics", 
+                            field: "quiz_physics", 
+                            hozAlign: "center", 
+                            formatter: colorFormatterGoalInt, 
+                            minWidth: 50,
+                            sorter: function(a, b, aRow, bRow, column, dir, sorterParams){
+                                var a_val = parseFloat(a) || 0;
+                                var b_val = parseFloat(b) || 0;
+                                return a_val - b_val;
+                            }
+                        },
+                        { 
+                            title: "Chemistry", 
+                            field: "quiz_chemistry", 
+                            hozAlign: "center", 
+                            formatter: colorFormatterGoalInt, 
+                            minWidth: 50,
+                            sorter: function(a, b, aRow, bRow, column, dir, sorterParams){
+                                var a_val = parseFloat(a) || 0;
+                                var b_val = parseFloat(b) || 0;
+                                return a_val - b_val;
+                            }
+                        },
                     ]
                 }
             ];
