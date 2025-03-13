@@ -112,393 +112,327 @@ document.addEventListener('DOMContentLoaded', function() {
         carouselTrack.style.boxSizing = "border-box";
         carouselTrack.style.transition = "transform 0.3s ease"; // 添加平滑过渡效果
         
-        // 计算每个视频项的宽度 - 我们希望同时显示2-3个视频
-        const itemsToShow = videoCells.length >= 3 ? 3 : 2; // 如果有3个或更多视频，显示3个，否则显示2个
-        const itemWidth = 100 / itemsToShow; // 百分比宽度
+        // 创建视频项数组
+        const videoItems = [];
         
-        // 为了实现无缝滚动，我们需要复制视频
-        const allVideoCells = [...videoCells];
-        
-        // 将每个视频单元格添加到轮播轨道
-        allVideoCells.forEach(cell => {
+        // 处理每个视频单元格
+        videoCells.forEach((cell, index) => {
+            // 创建视频项容器
             const videoItem = document.createElement("div");
             videoItem.className = "video-carousel-item";
-            videoItem.style.flex = "0 0 auto";
-            videoItem.style.padding = "10px";
-            videoItem.style.boxSizing = "border-box";
-            videoItem.style.width = itemWidth + "%";
-            videoItem.style.minHeight = "100%"; // 最小高度100%，允许内容扩展
             videoItem.style.display = "flex";
             videoItem.style.flexDirection = "column";
-            videoItem.style.justifyContent = "flex-start"; // 从顶部开始对齐
-            videoItem.style.alignItems = "center"; // 居中对齐内容
-            
-            // 克隆单元格内容
-            videoItem.innerHTML = cell.innerHTML;
-            
-            // 创建视频容器，用于控制视频宽度
-            const videoContainer = document.createElement("div");
-            videoContainer.className = "video-wrapper";
-            videoContainer.style.width = "100%";
-            videoContainer.style.maxWidth = "600px"; // 设置最大宽度
-            videoContainer.style.margin = "0 auto";
-            videoContainer.style.position = "relative";
-            
-            // 获取视频元素
-            const video = videoItem.querySelector("video");
-            if (video) {
-                // 从原位置移除视频
-                video.parentNode.removeChild(video);
-                
-                // 设置视频样式
-                video.style.maxHeight = "400px";
-                video.style.width = "100%";
-                video.style.display = "block";
-                video.style.objectFit = "contain"; // 保持视频比例
-                
-                // 将视频添加到视频容器
-                videoContainer.appendChild(video);
-                
-                // 将视频容器插入到视频项的开头
-                if (videoItem.firstChild) {
-                    videoItem.insertBefore(videoContainer, videoItem.firstChild);
-                } else {
-                    videoItem.appendChild(videoContainer);
-                }
-            }
-            
-            // 确保折叠部分在视频下方正确显示，并且宽度与视频一致
-            const collapsibleSection = videoItem.querySelector(".collapsible-section");
-            if (collapsibleSection) {
-                // 从原位置移除折叠部分
-                collapsibleSection.parentNode.removeChild(collapsibleSection);
-                
-                // 设置折叠部分样式
-                collapsibleSection.style.width = "100%";
-                collapsibleSection.style.maxWidth = "600px"; // 与视频容器相同的最大宽度
-                collapsibleSection.style.marginTop = "10px";
-                
-                // 将折叠部分添加到视频容器后面
-                videoContainer.parentNode.insertBefore(collapsibleSection, videoContainer.nextSibling);
-                
-                // 调整按钮宽度，使其与视频宽度一致
-                const toggleButton = collapsibleSection.querySelector(".toggle-section");
-                if (toggleButton) {
-                    toggleButton.style.width = "100%";
-                    toggleButton.style.maxWidth = "100%";
-                }
-                
-                // 调整折叠内容宽度
-                const collapseContent = collapsibleSection.querySelector(".collapse-content");
-                if (collapseContent) {
-                    collapseContent.style.width = "100%";
-                    collapseContent.style.maxWidth = "100%";
-                }
-            }
-            
-            carouselTrack.appendChild(videoItem);
-        });
-        
-        // 为了实现无缝滚动，再复制一组视频
-        allVideoCells.forEach(cell => {
-            const videoItem = document.createElement("div");
-            videoItem.className = "video-carousel-item";
-            videoItem.style.flex = "0 0 auto";
-            videoItem.style.padding = "10px";
-            videoItem.style.boxSizing = "border-box";
-            videoItem.style.width = itemWidth + "%";
-            videoItem.style.minHeight = "100%"; // 最小高度100%，允许内容扩展
-            videoItem.style.display = "flex";
-            videoItem.style.flexDirection = "column";
-            videoItem.style.justifyContent = "flex-start"; // 从顶部开始对齐
             videoItem.style.alignItems = "center";
+            videoItem.style.justifyContent = "flex-start"; // 从顶部开始对齐内容
+            videoItem.style.minWidth = "600px"; // 设置最小宽度
+            videoItem.style.maxWidth = "600px"; // 设置最大宽度
+            videoItem.style.margin = "0 10px"; // 减小左右间距为10px
+            videoItem.style.boxSizing = "border-box";
+            videoItem.style.position = "relative";
             
-            videoItem.innerHTML = cell.innerHTML;
-            
-            // 创建视频容器，用于控制视频宽度
-            const videoContainer = document.createElement("div");
-            videoContainer.className = "video-wrapper";
-            videoContainer.style.width = "100%";
-            videoContainer.style.maxWidth = "600px"; // 设置最大宽度
-            videoContainer.style.margin = "0 auto";
-            videoContainer.style.position = "relative";
+            // 创建视频包装器，控制视频宽度
+            const videoWrapper = document.createElement("div");
+            videoWrapper.className = "video-wrapper";
+            videoWrapper.style.width = "100%";
+            videoWrapper.style.maxWidth = "600px";
+            videoWrapper.style.margin = "0 auto";
+            videoWrapper.style.position = "relative";
             
             // 获取视频元素
-            const video = videoItem.querySelector("video");
+            const video = cell.querySelector("video");
             if (video) {
-                // 从原位置移除视频
-                video.parentNode.removeChild(video);
+                // 克隆视频元素
+                const clonedVideo = video.cloneNode(true);
+                clonedVideo.style.width = "100%";
+                clonedVideo.style.height = "auto";
+                clonedVideo.style.borderRadius = "8px"; // 视频圆角
+                clonedVideo.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)"; // 添加阴影
                 
-                // 设置视频样式
-                video.style.maxHeight = "400px";
-                video.style.width = "100%";
-                video.style.display = "block";
-                video.style.objectFit = "contain"; // 保持视频比例
+                // 将克隆的视频添加到视频包装器
+                videoWrapper.appendChild(clonedVideo);
                 
-                // 将视频添加到视频容器
-                videoContainer.appendChild(video);
-                
-                // 将视频容器插入到视频项的开头
-                if (videoItem.firstChild) {
-                    videoItem.insertBefore(videoContainer, videoItem.firstChild);
+                // 获取折叠部分
+                const collapsibleSection = cell.querySelector(".collapsible-section");
+                if (collapsibleSection) {
+                    // 克隆折叠部分
+                    const clonedCollapsible = collapsibleSection.cloneNode(true);
+                    
+                    // 获取按钮和内容
+                    const button = clonedCollapsible.querySelector("button");
+                    const content = clonedCollapsible.querySelector(".collapse-content");
+                    
+                    if (button && content) {
+                        // 设置按钮样式
+                        button.style.width = "100%";
+                        button.style.maxWidth = "600px";
+                        button.style.margin = "10px auto 0";
+                        button.style.borderRadius = "4px";
+                        
+                        // 设置内容样式
+                        content.style.width = "100%";
+                        content.style.maxWidth = "600px";
+                        content.style.margin = "0 auto";
+                        content.style.backgroundColor = "white";
+                        content.style.padding = "15px";
+                        content.style.borderRadius = "0 0 8px 8px";
+                        content.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
+                        content.style.zIndex = "10";
+                        content.style.position = "relative";
+                        
+                        // 添加点击事件
+                        button.addEventListener("click", function() {
+                            // 切换内容显示状态
+                            if (content.style.display === "none" || !content.style.display) {
+                                content.style.display = "block";
+                                
+                                // 更新图标
+                                const icon = button.querySelector('.fas');
+                                if (icon) {
+                                    icon.classList.remove('fa-angle-down');
+                                    icon.classList.add('fa-angle-up');
+                                }
+                                
+                                // 暂停轮播
+                                isPaused = true;
+                                stopScroll();
+                                carouselContainer.style.cursor = "default";
+                                
+                                // 调整容器高度以适应内容
+                                setTimeout(() => {
+                                    const contentHeight = content.offsetHeight;
+                                    const videoHeight = videoWrapper.offsetHeight;
+                                    const totalHeight = videoHeight + contentHeight + 100; // 额外空间
+                                    carouselContainer.style.minHeight = `${totalHeight}px`;
+                                }, 100);
+                                
+                                console.log("Content opened, carousel paused");
+                            } else {
+                                content.style.display = "none";
+                                
+                                // 更新图标
+                                const icon = button.querySelector('.fas');
+                                if (icon) {
+                                    icon.classList.remove('fa-angle-up');
+                                    icon.classList.add('fa-angle-down');
+                                }
+                                
+                                // 恢复轮播
+                                isPaused = false;
+                                carouselContainer.style.cursor = "grab";
+                                startContinuousScroll();
+                                
+                                // 重置容器高度
+                                carouselContainer.style.minHeight = '500px';
+                                
+                                console.log("Content closed, carousel resumed");
+                            }
+                        });
+                    }
+                    
+                    // 将克隆的折叠部分添加到视频项
+                    videoItem.appendChild(videoWrapper);
+                    videoItem.appendChild(clonedCollapsible);
                 } else {
-                    videoItem.appendChild(videoContainer);
+                    // 如果没有折叠部分，只添加视频
+                    videoItem.appendChild(videoWrapper);
                 }
             }
             
-            // 确保折叠部分在视频下方正确显示，并且宽度与视频一致
-            const collapsibleSection = videoItem.querySelector(".collapsible-section");
-            if (collapsibleSection) {
-                // 从原位置移除折叠部分
-                collapsibleSection.parentNode.removeChild(collapsibleSection);
-                
-                // 设置折叠部分样式
-                collapsibleSection.style.width = "100%";
-                collapsibleSection.style.maxWidth = "600px"; // 与视频容器相同的最大宽度
-                collapsibleSection.style.marginTop = "10px";
-                
-                // 将折叠部分添加到视频容器后面
-                videoContainer.parentNode.insertBefore(collapsibleSection, videoContainer.nextSibling);
-                
-                // 调整按钮宽度，使其与视频宽度一致
-                const toggleButton = collapsibleSection.querySelector(".toggle-section");
-                if (toggleButton) {
-                    toggleButton.style.width = "100%";
-                    toggleButton.style.maxWidth = "100%";
-                }
-                
-                // 调整折叠内容宽度
-                const collapseContent = collapsibleSection.querySelector(".collapse-content");
-                if (collapseContent) {
-                    collapseContent.style.width = "100%";
-                    collapseContent.style.maxWidth = "100%";
-                }
-            }
-            
-            carouselTrack.appendChild(videoItem);
+            // 将视频项添加到数组
+            videoItems.push(videoItem);
         });
         
-        // 添加轮播轨道到轮播容器
+        // 将视频项添加到轮播轨道
+        videoItems.forEach(item => {
+            carouselTrack.appendChild(item);
+        });
+        
+        // 为了实现无限滚动效果，复制视频项
+        videoItems.forEach(item => {
+            const clonedItem = item.cloneNode(true);
+            
+            // 为克隆的折叠部分添加事件监听器
+            const button = clonedItem.querySelector("button");
+            const content = clonedItem.querySelector(".collapse-content");
+            
+            if (button && content) {
+                button.addEventListener("click", function() {
+                    // 切换内容显示状态
+                    if (content.style.display === "none" || !content.style.display) {
+                        content.style.display = "block";
+                        
+                        // 更新图标
+                        const icon = button.querySelector('.fas');
+                        if (icon) {
+                            icon.classList.remove('fa-angle-down');
+                            icon.classList.add('fa-angle-up');
+                        }
+                        
+                        // 暂停轮播
+                        isPaused = true;
+                        stopScroll();
+                        carouselContainer.style.cursor = "default";
+                        
+                        // 调整容器高度以适应内容
+                        setTimeout(() => {
+                            const contentHeight = content.offsetHeight;
+                            const videoHeight = clonedItem.querySelector(".video-wrapper").offsetHeight;
+                            const totalHeight = videoHeight + contentHeight + 100; // 额外空间
+                            carouselContainer.style.minHeight = `${totalHeight}px`;
+                        }, 100);
+                        
+                        console.log("Cloned content opened, carousel paused");
+                    } else {
+                        content.style.display = "none";
+                        
+                        // 更新图标
+                        const icon = button.querySelector('.fas');
+                        if (icon) {
+                            icon.classList.remove('fa-angle-up');
+                            icon.classList.add('fa-angle-down');
+                        }
+                        
+                        // 恢复轮播
+                        isPaused = false;
+                        carouselContainer.style.cursor = "grab";
+                        startContinuousScroll();
+                        
+                        // 重置容器高度
+                        carouselContainer.style.minHeight = '500px';
+                        
+                        console.log("Cloned content closed, carousel resumed");
+                    }
+                });
+            }
+            
+            carouselTrack.appendChild(clonedItem);
+        });
+        
+        // 将轮播轨道添加到轮播容器
         carouselContainer.appendChild(carouselTrack);
         
         // 替换原始表格
         videoContainer.innerHTML = '';
         videoContainer.appendChild(carouselContainer);
         
-        // 变量用于跟踪滚动状态
-        let scrollIntervalId = null;
-        let position = 0;
-        const scrollSpeed = 1; // 每次移动的像素数
-        const scrollInterval = 30; // 滚动间隔（毫秒）
+        // 计算轮播轨道的总宽度
+        const trackWidth = videoItems.length * 620; // 每个视频项的宽度加上边距
         
-        // 变量用于跟踪拖动状态
+        // 设置变量以跟踪滚动位置和状态
+        let scrollPosition = 0;
+        let scrollInterval;
         let isDragging = false;
-        let startX = 0;
-        let startPosition = 0;
-        
-        // 变量用于跟踪暂停状态
+        let startX;
+        let scrollLeft;
         let isPaused = false;
         
-        // 停止滚动函数
-        function stopScroll() {
-            if (scrollIntervalId) {
-                clearInterval(scrollIntervalId);
-                scrollIntervalId = null;
-            }
-        }
-        
-        // 开始连续滚动函数
+        // 函数：开始连续滚动
         function startContinuousScroll() {
-            // 如果已经在滚动，先停止
-            stopScroll();
+            stopScroll(); // 先停止之前的滚动
             
-            // 如果处于暂停状态，不启动滚动
-            if (isPaused) {
-                return;
-            }
-            
-            // 启动新的滚动间隔
-            scrollIntervalId = setInterval(() => {
-                position -= scrollSpeed;
+            scrollInterval = setInterval(() => {
+                scrollPosition += 1; // 每次滚动1像素
                 
-                // 计算重置点
-                const totalItems = allVideoCells.length;
-                const itemWidthPx = carouselTrack.offsetWidth / totalItems;
-                const resetPoint = -(itemWidthPx * allVideoCells.length);
-                
-                if (position <= resetPoint) {
-                    position = 0;
+                // 如果滚动到了一半，重置位置
+                if (scrollPosition >= trackWidth / 2) {
+                    scrollPosition = 0;
                 }
                 
-                carouselTrack.style.transform = `translateX(${position}px)`;
-            }, scrollInterval);
+                carouselTrack.style.transform = `translateX(-${scrollPosition}px)`;
+            }, 20); // 每20毫秒滚动一次，可以调整速度
         }
         
-        // 设置拖动事件
-        carouselContainer.addEventListener('mousedown', function(e) {
-            if (isPaused) return; // 如果处于暂停状态，不允许拖动
+        // 函数：停止滚动
+        function stopScroll() {
+            clearInterval(scrollInterval);
+        }
+        
+        // 鼠标按下时开始拖动
+        carouselContainer.addEventListener("mousedown", function(e) {
+            if (isPaused) return; // 如果已暂停，不允许拖动
             
             isDragging = true;
-            startX = e.clientX;
-            startPosition = position;
-            carouselTrack.style.transition = 'none';
-            carouselContainer.style.cursor = 'grabbing';
-            stopScroll();
+            startX = e.pageX - carouselContainer.offsetLeft;
+            scrollLeft = scrollPosition;
+            carouselTrack.style.transition = 'none'; // 拖动时移除过渡效果
+            carouselContainer.style.cursor = 'grabbing'; // 更改光标样式
+            stopScroll(); // 停止自动滚动
             
-            e.preventDefault(); // 防止选中文本
+            // 防止选中文本
+            e.preventDefault();
         });
         
-        document.addEventListener('mousemove', function(e) {
+        // 鼠标移动时更新位置
+        carouselContainer.addEventListener("mousemove", function(e) {
             if (!isDragging) return;
             
-            const x = e.clientX;
-            const diff = x - startX;
-            position = startPosition + diff;
+            const x = e.pageX - carouselContainer.offsetLeft;
+            const walk = (x - startX) * 2; // 乘以2使拖动更敏感
             
-            carouselTrack.style.transform = `translateX(${position}px)`;
+            scrollPosition = scrollLeft - walk;
+            
+            // 确保滚动位置在有效范围内
+            if (scrollPosition < 0) {
+                scrollPosition = 0;
+            } else if (scrollPosition > trackWidth / 2) {
+                scrollPosition = trackWidth / 2;
+            }
+            
+            carouselTrack.style.transform = `translateX(-${scrollPosition}px)`;
         });
         
-        document.addEventListener('mouseup', function(e) {
+        // 鼠标释放时结束拖动
+        carouselContainer.addEventListener("mouseup", function() {
             if (!isDragging) return;
             
             isDragging = false;
-            carouselTrack.style.transition = 'transform 0.3s ease';
-            carouselContainer.style.cursor = 'grab';
+            carouselTrack.style.transition = 'transform 0.3s ease'; // 恢复过渡效果
+            carouselContainer.style.cursor = 'grab'; // 恢复光标样式
             
-            // 计算边界
-            const totalItems = allVideoCells.length;
-            const itemWidthPx = carouselTrack.offsetWidth / totalItems;
-            const resetPoint = -(itemWidthPx * allVideoCells.length);
-            
-            // 边界检查
-            if (position > itemWidthPx / 2) {
-                position = 0;
-                carouselTrack.style.transform = `translateX(${position}px)`;
-            } else if (position < resetPoint + itemWidthPx / 2) {
-                position = resetPoint;
-                carouselTrack.style.transform = `translateX(${position}px)`;
-            }
-            
-            // 如果不处于暂停状态，恢复滚动
             if (!isPaused) {
-                startContinuousScroll();
+                startContinuousScroll(); // 恢复自动滚动
             }
         });
         
-        // 设置折叠部分的功能
-        function setupCollapsibleSections() {
-            // 获取所有轮播项中的折叠按钮
-            const allToggleButtons = carouselTrack.querySelectorAll('.toggle-section');
-            
-            allToggleButtons.forEach(button => {
-                // 获取目标内容ID
-                const targetId = button.getAttribute('aria-controls');
-                if (targetId) {
-                    // 查找目标内容
-                    const targetContent = document.getElementById(targetId);
-                    if (targetContent) {
-                        // 初始状态为隐藏
-                        targetContent.style.display = 'none';
-                        
-                        // 添加点击事件
-                        button.addEventListener('click', function(e) {
-                            e.stopPropagation(); // 阻止事件冒泡
-                            
-                            // 停止滚动
-                            stopScroll();
-                            
-                            // 切换内容显示状态
-                            if (targetContent.style.display === 'none') {
-                                // 显示内容
-                                targetContent.style.display = 'block';
-                                targetContent.style.zIndex = '100'; // 确保内容在最上层
-                                
-                                // 设置暂停状态
-                                isPaused = true;
-                                
-                                // 调整容器高度以适应内容
-                                const videoItem = button.closest('.video-carousel-item');
-                                if (videoItem) {
-                                    // 计算内容高度
-                                    const contentHeight = targetContent.offsetHeight;
-                                    const videoHeight = videoItem.querySelector('.video-wrapper').offsetHeight;
-                                    const totalHeight = videoHeight + contentHeight + 100; // 额外空间
-                                    
-                                    // 设置最小高度
-                                    carouselContainer.style.minHeight = totalHeight + 'px';
-                                }
-                                
-                                // 更改按钮图标
-                                const icon = button.querySelector('.fa-angle-down');
-                                if (icon) {
-                                    icon.classList.remove('fa-angle-down');
-                                    icon.classList.add('fa-angle-up');
-                                }
-                            } else {
-                                // 隐藏内容
-                                targetContent.style.display = 'none';
-                                
-                                // 重置暂停状态
-                                isPaused = false;
-                                
-                                // 重置轮播容器高度
-                                carouselContainer.style.minHeight = '500px';
-                                
-                                // 更改按钮图标
-                                const icon = button.querySelector('.fa-angle-up');
-                                if (icon) {
-                                    icon.classList.remove('fa-angle-up');
-                                    icon.classList.add('fa-angle-down');
-                                }
-                                
-                                // 恢复滚动
-                                startContinuousScroll();
-                            }
-                            
-                            // 更改容器光标样式
-                            carouselContainer.style.cursor = targetContent.style.display === 'none' ? "grab" : "default";
-                            
-                            console.log("Toggle button clicked, content toggled, carousel " + (isPaused ? "paused" : "resumed"));
-                        });
-                    }
+        // 鼠标离开时结束拖动
+        carouselContainer.addEventListener("mouseleave", function() {
+            if (isDragging) {
+                isDragging = false;
+                carouselTrack.style.transition = 'transform 0.3s ease';
+                carouselContainer.style.cursor = 'grab';
+                
+                if (!isPaused) {
+                    startContinuousScroll();
                 }
-            });
-        }
+            }
+        });
         
-        // 设置折叠部分
-        setupCollapsibleSections();
-        
-        // 点击其他地方恢复滚动
-        document.addEventListener("click", function(e) {
-            // 检查点击是否在按钮或折叠内容区域内
-            let isClickInsideCarousel = carouselContainer.contains(e.target);
-            let isClickInsideButton = false;
-            let isClickInsideCollapsible = false;
+        // 点击轮播区域（非按钮和非折叠内容）时关闭所有折叠内容并恢复滚动
+        carouselContainer.addEventListener("click", function(e) {
+            // 检查点击的元素是否是按钮或折叠内容或其子元素
+            let target = e.target;
+            let isButtonOrContent = false;
             
-            const allToggleButtons = carouselTrack.querySelectorAll('.toggle-section');
-            allToggleButtons.forEach(button => {
-                if (button.contains(e.target)) {
-                    isClickInsideButton = true;
+            while (target && target !== carouselContainer) {
+                if (target.tagName === 'BUTTON' || target.classList.contains('collapse-content')) {
+                    isButtonOrContent = true;
+                    break;
                 }
-            });
+                target = target.parentElement;
+            }
             
-            const collapsibleSections = carouselTrack.querySelectorAll(".collapse-content");
-            collapsibleSections.forEach(section => {
-                if (section.contains(e.target)) {
-                    isClickInsideCollapsible = true;
-                }
-            });
-            
-            // 如果点击在轮播内但不在按钮或折叠内容区域内，恢复滚动
-            if (isClickInsideCarousel && !isClickInsideButton && !isClickInsideCollapsible && isPaused) {
-                // 隐藏所有折叠内容
-                collapsibleSections.forEach(section => {
-                    section.style.display = 'none';
+            // 如果点击的不是按钮或折叠内容，关闭所有折叠内容并恢复滚动
+            if (!isButtonOrContent && isPaused) {
+                // 关闭所有折叠内容
+                const contents = carouselContainer.querySelectorAll('.collapse-content');
+                contents.forEach(content => {
+                    content.style.display = 'none';
                 });
                 
-                // 重置所有按钮图标
-                allToggleButtons.forEach(button => {
-                    const icon = button.querySelector('.fa-angle-up');
+                // 更新所有图标
+                const buttons = carouselContainer.querySelectorAll('button');
+                buttons.forEach(button => {
+                    const icon = button.querySelector('.fas');
                     if (icon) {
                         icon.classList.remove('fa-angle-up');
                         icon.classList.add('fa-angle-down');
