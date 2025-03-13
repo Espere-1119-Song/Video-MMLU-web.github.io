@@ -121,6 +121,24 @@ const debugColorFormatter = function(cell, formatterParams) {
     return result;
 };
 
+// 创建一个简单的固定颜色格式化器
+const simpleColorFormatter = function(cell, formatterParams) {
+    const value = cell.getValue();
+    
+    // 简单格式化值
+    const formattedValue = typeof value === 'number' ? value.toFixed(1) : value;
+    
+    // 使用固定的背景颜色
+    return `<div style="
+        background-color: #ffcccc;
+        padding: 4px;
+        text-align: center;
+        width: 100%;
+        height: 100%;
+        color: black;
+    ">${formattedValue}</div>`;
+};
+
 document.addEventListener('DOMContentLoaded', function () {
     Promise.all([
         // fetch('website/data/virtualhome_total_benchmark.json').then(response => response.json()),
@@ -285,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             title: "Avg.", 
                             field: "quiz_avg", 
                             hozAlign: "center", 
-                            formatter: debugColorFormatter, // 使用调试格式化器
+                            formatter: simpleColorFormatter, // 使用简单的固定颜色格式化器
                             minWidth: 50,
                             sorter: function(a, b, aRow, bRow, column, dir, sorterParams){
                                 var a_val = parseFloat(a) || 0;
@@ -297,7 +315,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             title: "Math", 
                             field: "quiz_math", 
                             hozAlign: "center", 
-                            formatter: colorFormatterGoalInt, 
+                            formatter: simpleColorFormatter, 
                             minWidth: 50,
                             sorter: function(a, b, aRow, bRow, column, dir, sorterParams){
                                 var a_val = parseFloat(a) || 0;
@@ -309,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             title: "Physics", 
                             field: "quiz_physics", 
                             hozAlign: "center", 
-                            formatter: colorFormatterGoalInt, 
+                            formatter: simpleColorFormatter, 
                             minWidth: 50,
                             sorter: function(a, b, aRow, bRow, column, dir, sorterParams){
                                 var a_val = parseFloat(a) || 0;
@@ -321,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             title: "Chemistry", 
                             field: "quiz_chemistry", 
                             hozAlign: "center", 
-                            formatter: colorFormatterGoalInt, 
+                            formatter: simpleColorFormatter, 
                             minWidth: 50,
                             sorter: function(a, b, aRow, bRow, column, dir, sorterParams){
                                 var a_val = parseFloat(a) || 0;
