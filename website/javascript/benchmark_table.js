@@ -224,10 +224,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 {
                     title: "<div style='text-align: center;'>Notebook</div>",
                     columns: [
-                        { title: "Avg.", field: "notebook_avg", hozAlign: "center", formatter: colorFormatterAvg, minWidth: 50 },
-                        { title: "Math", field: "notebook_math", hozAlign: "center", formatter: colorFormatterAvg, minWidth: 50 },
-                        { title: "Physics", field: "notebook_physics", hozAlign: "center", formatter: colorFormatterAvg, minWidth: 50 },
-                        { title: "Chemistry", field: "notebook_chemistry", hozAlign: "center", formatter: colorFormatterAvg, minWidth: 50 },
+                        { title: "Avg.", field: "notebook_avg", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
+                        { title: "Math", field: "notebook_math", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
+                        { title: "Physics", field: "notebook_physics", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
+                        { title: "Chemistry", field: "notebook_chemistry", hozAlign: "center", formatter: colorFormatterActionSeq, minWidth: 50 },
                     ]
                 },
                 {
