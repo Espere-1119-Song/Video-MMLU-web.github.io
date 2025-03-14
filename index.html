@@ -129,6 +129,8 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5) !important;
         padding: 15px !important;
         margin-top: 5px !important;
+        max-height: 400px !important; /* 限制最大高度 */
+        overflow-y: auto !important; /* 添加垂直滚动条 */
     }
 
     /* 确保内部元素也有白色背景 */
@@ -140,6 +142,8 @@
         position: relative !important;
         z-index: 10000 !important;
         color: #333 !important;
+        margin: 0 0 10px 0 !important;
+        line-height: 1.5 !important;
     }
 
     /* 确保折叠内容在展开时不会被下方内容遮挡 */
@@ -153,7 +157,98 @@
         position: relative !important;
         z-index: 10001 !important;
     }
+
+    /* 专门针对详细说明的按钮样式 */
+    button[aria-controls^="transition_table_"] {
+        background-color: #f8f9fa !important;
+        border: 1px solid #dee2e6 !important;
+        color: #007bff !important;
+        padding: 8px 15px !important;
+        border-radius: 4px !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+    }
+
+    button[aria-controls^="transition_table_"]:hover {
+        background-color: #e2e6ea !important;
+    }
+
+    /* 专门针对详细说明的折叠内容样式 */
+    div[id^="transition_table_"] {
+        background-color: white !important;
+        border: 2px solid #007bff !important;
+        border-radius: 5px !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5) !important;
+        padding: 15px !important;
+        margin-top: 5px !important;
+        max-height: 400px !important;
+        overflow-y: auto !important;
+        position: absolute !important;
+        z-index: 9999 !important;
+        width: 100% !important;
+    }
+
+    /* 确保详细说明中的段落样式正确 */
+    div[id^="transition_table_"] p {
+        background-color: white !important;
+        color: #333 !important;
+        margin: 0 0 10px 0 !important;
+        line-height: 1.5 !important;
+        font-size: 14px !important;
+        position: relative !important;
+        z-index: 10000 !important;
+    }
     </style>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 获取所有详细说明按钮
+        const detailButtons = document.querySelectorAll('button[aria-controls^="transition_table_"]');
+        
+        detailButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // 获取目标内容的ID
+                const targetId = this.getAttribute('aria-controls');
+                const targetContent = document.getElementById(targetId);
+                
+                // 如果找不到目标内容，则退出
+                if (!targetContent) return;
+                
+                // 设置延时，等待折叠内容展开后再应用样式
+                setTimeout(() => {
+                    // 检查内容是否可见
+                    if (targetContent.classList.contains('show')) {
+                        // 应用样式
+                        targetContent.style.backgroundColor = 'white';
+                        targetContent.style.position = 'absolute';
+                        targetContent.style.zIndex = '9999';
+                        targetContent.style.width = '100%';
+                        targetContent.style.border = '2px solid #007bff';
+                        targetContent.style.borderRadius = '5px';
+                        targetContent.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.5)';
+                        targetContent.style.padding = '15px';
+                        targetContent.style.marginTop = '5px';
+                        targetContent.style.maxHeight = '400px';
+                        targetContent.style.overflowY = 'auto';
+                        
+                        // 确保内部元素也有白色背景
+                        const paragraphs = targetContent.querySelectorAll('p');
+                        paragraphs.forEach(p => {
+                            p.style.backgroundColor = 'white';
+                            p.style.color = '#333';
+                            p.style.margin = '0 0 10px 0';
+                            p.style.lineHeight = '1.5';
+                            p.style.fontSize = '14px';
+                            p.style.position = 'relative';
+                            p.style.zIndex = '10000';
+                        });
+                    }
+                }, 300); // 300毫秒延时，等待折叠动画完成
+            });
+        });
+    });
+    </script>
+
 </head>
 
 <body>
