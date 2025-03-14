@@ -1165,6 +1165,54 @@
         </div>
     </footer>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 获取所有折叠按钮
+        const collapsibleButtons = document.querySelectorAll('[data-toggle="collapse"]');
+        
+        // 为每个按钮添加点击事件
+        collapsibleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // 获取目标内容的ID
+                const targetId = this.getAttribute('aria-controls');
+                const targetContent = document.getElementById(targetId);
+                
+                // 如果找不到目标内容，则退出
+                if (!targetContent) return;
+                
+                // 设置延时，等待折叠内容展开后再应用样式
+                setTimeout(() => {
+                    // 检查内容是否可见
+                    if (targetContent.classList.contains('show')) {
+                        // 应用样式
+                        targetContent.style.backgroundColor = '#ffffff';
+                        targetContent.style.position = 'relative';
+                        targetContent.style.zIndex = '9999';
+                        
+                        // 确保内部元素也有白色背景
+                        const tables = targetContent.querySelectorAll('table');
+                        tables.forEach(table => {
+                            table.style.backgroundColor = '#ffffff';
+                        });
+                        
+                        const rows = targetContent.querySelectorAll('tr');
+                        rows.forEach(row => {
+                            row.style.backgroundColor = '#ffffff';
+                        });
+                        
+                        const paragraphs = targetContent.querySelectorAll('p');
+                        paragraphs.forEach(p => {
+                            p.style.backgroundColor = '#ffffff';
+                            p.style.position = 'relative';
+                            p.style.zIndex = '10000';
+                        });
+                    }
+                }, 300); // 300毫秒延时，等待折叠动画完成
+            });
+        });
+    });
+    </script>
+
 </body>
 
 
