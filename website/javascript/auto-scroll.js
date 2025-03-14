@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // 将内容容器添加到折叠容器
                     collapsibleContainer.appendChild(contentContainer);
                     
-                    // 添加按钮点击事件
+                    // 修改按钮点击事件
                     button.addEventListener("click", function() {
                         // 获取所有内容容器
                         const allContentContainers = document.querySelectorAll('.collapse-content');
@@ -257,17 +257,28 @@ document.addEventListener('DOMContentLoaded', function() {
                             // 隐藏原始内容
                             contentContainer.style.display = "none";
                             
-                            // 调整Abstract部分的位置
+                            // 调整Abstract部分的位置 - 使用更精确的计算
                             setTimeout(() => {
                                 // 获取展开内容区域的高度
                                 const expandedHeight = expandedContentArea.offsetHeight;
                                 
-                                // 查找Abstract部分并调整其位置
+                                // 获取展开内容区域的位置
+                                const expandedRect = expandedContentArea.getBoundingClientRect();
+                                const expandedBottom = expandedRect.bottom;
+                                
+                                // 查找Abstract部分
                                 const abstractSection = document.querySelector('.abstract-section, #abstract, .abstract');
                                 if (abstractSection) {
-                                    // 计算需要的额外空间
-                                    const extraSpace = expandedHeight + 10; // 额外10px空间
-                                    abstractSection.style.marginTop = extraSpace + 'px';
+                                    // 获取Abstract的位置
+                                    const abstractRect = abstractSection.getBoundingClientRect();
+                                    const abstractTop = abstractRect.top;
+                                    
+                                    // 计算需要的额外空间 - 只添加必要的空间
+                                    // 如果Abstract顶部已经在展开内容底部之下，则不需要额外空间
+                                    if (abstractTop < expandedBottom) {
+                                        const neededSpace = expandedBottom - abstractTop + 2; // 只添加5px额外空间
+                                        abstractSection.style.marginTop = neededSpace + 'px';
+                                    }
                                 }
                             }, 100);
                         } else {
@@ -368,17 +379,28 @@ document.addEventListener('DOMContentLoaded', function() {
                             // 隐藏原始内容
                             clonedContent.style.display = "none";
                             
-                            // 调整Abstract部分的位置
+                            // 调整Abstract部分的位置 - 使用更精确的计算
                             setTimeout(() => {
                                 // 获取展开内容区域的高度
                                 const expandedHeight = expandedContentArea.offsetHeight;
                                 
-                                // 查找Abstract部分并调整其位置
+                                // 获取展开内容区域的位置
+                                const expandedRect = expandedContentArea.getBoundingClientRect();
+                                const expandedBottom = expandedRect.bottom;
+                                
+                                // 查找Abstract部分
                                 const abstractSection = document.querySelector('.abstract-section, #abstract, .abstract');
                                 if (abstractSection) {
-                                    // 计算需要的额外空间
-                                    const extraSpace = expandedHeight + 10; // 额外10px空间
-                                    abstractSection.style.marginTop = extraSpace + 'px';
+                                    // 获取Abstract的位置
+                                    const abstractRect = abstractSection.getBoundingClientRect();
+                                    const abstractTop = abstractRect.top;
+                                    
+                                    // 计算需要的额外空间 - 只添加必要的空间
+                                    // 如果Abstract顶部已经在展开内容底部之下，则不需要额外空间
+                                    if (abstractTop < expandedBottom) {
+                                        const neededSpace = expandedBottom - abstractTop + 5; // 只添加5px额外空间
+                                        abstractSection.style.marginTop = neededSpace + 'px';
+                                    }
                                 }
                             }, 100);
                         } else {
