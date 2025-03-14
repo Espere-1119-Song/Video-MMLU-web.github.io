@@ -158,21 +158,6 @@
         z-index: 10001 !important;
     }
 
-    /* 专门针对详细说明的按钮样式 */
-    button[aria-controls^="transition_table_"] {
-        background-color: #f8f9fa !important;
-        border: 1px solid #dee2e6 !important;
-        color: #007bff !important;
-        padding: 8px 15px !important;
-        border-radius: 4px !important;
-        cursor: pointer !important;
-        transition: all 0.3s ease !important;
-    }
-
-    button[aria-controls^="transition_table_"]:hover {
-        background-color: #e2e6ea !important;
-    }
-
     /* 专门针对详细说明的折叠内容样式 */
     div[id^="transition_table_"] {
         background-color: white !important;
@@ -205,6 +190,7 @@
         // 获取所有详细说明按钮
         const detailButtons = document.querySelectorAll('button[aria-controls^="transition_table_"]');
         
+        // 为每个按钮添加点击事件
         detailButtons.forEach(button => {
             button.addEventListener('click', function() {
                 // 获取目标内容的ID
@@ -214,38 +200,69 @@
                 // 如果找不到目标内容，则退出
                 if (!targetContent) return;
                 
-                // 设置延时，等待折叠内容展开后再应用样式
-                setTimeout(() => {
-                    // 检查内容是否可见
-                    if (targetContent.classList.contains('show')) {
-                        // 应用样式
-                        targetContent.style.backgroundColor = 'white';
-                        targetContent.style.position = 'absolute';
-                        targetContent.style.zIndex = '9999';
-                        targetContent.style.width = '100%';
-                        targetContent.style.border = '2px solid #007bff';
-                        targetContent.style.borderRadius = '5px';
-                        targetContent.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.5)';
-                        targetContent.style.padding = '15px';
-                        targetContent.style.marginTop = '5px';
-                        targetContent.style.maxHeight = '400px';
-                        targetContent.style.overflowY = 'auto';
-                        
-                        // 确保内部元素也有白色背景
-                        const paragraphs = targetContent.querySelectorAll('p');
-                        paragraphs.forEach(p => {
-                            p.style.backgroundColor = 'white';
-                            p.style.color = '#333';
-                            p.style.margin = '0 0 10px 0';
-                            p.style.lineHeight = '1.5';
-                            p.style.fontSize = '14px';
-                            p.style.position = 'relative';
-                            p.style.zIndex = '10000';
-                        });
-                    }
-                }, 300); // 300毫秒延时，等待折叠动画完成
+                // 检查按钮的展开状态
+                const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                
+                // 如果按钮状态是折叠的，那么即将展开
+                if (!isExpanded) {
+                    // 设置延时，等待折叠内容展开后再应用样式
+                    setTimeout(() => {
+                        applyStyles(targetContent);
+                    }, 300); // 300毫秒延时，等待折叠动画完成
+                }
             });
         });
+        
+        // 监听 Bootstrap 折叠事件
+        document.addEventListener('shown.bs.collapse', function(e) {
+            // 应用样式到展开的内容
+            applyStyles(e.target);
+        });
+        
+        // 应用样式的函数
+        function applyStyles(element) {
+            if (!element) return;
+            
+            // 应用样式
+            element.style.backgroundColor = 'white';
+            element.style.position = 'absolute';
+            element.style.zIndex = '9999';
+            element.style.width = '100%';
+            element.style.border = '2px solid #007bff';
+            element.style.borderRadius = '5px';
+            element.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.5)';
+            element.style.padding = '15px';
+            element.style.marginTop = '5px';
+            element.style.maxHeight = '400px';
+            element.style.overflowY = 'auto';
+            
+            // 确保内部元素也有白色背景
+            const paragraphs = element.querySelectorAll('p');
+            paragraphs.forEach(p => {
+                p.style.backgroundColor = 'white';
+                p.style.color = '#333';
+                p.style.margin = '0 0 10px 0';
+                p.style.lineHeight = '1.5';
+                p.style.fontSize = '14px';
+                p.style.position = 'relative';
+                p.style.zIndex = '10000';
+            });
+            
+            const tables = element.querySelectorAll('table');
+            tables.forEach(table => {
+                table.style.backgroundColor = 'white';
+            });
+            
+            const rows = element.querySelectorAll('tr');
+            rows.forEach(row => {
+                row.style.backgroundColor = 'white';
+            });
+            
+            const cells = element.querySelectorAll('td');
+            cells.forEach(cell => {
+                cell.style.backgroundColor = 'white';
+            });
+        }
     });
     </script>
 
