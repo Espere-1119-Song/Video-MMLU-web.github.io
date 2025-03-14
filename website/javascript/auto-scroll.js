@@ -187,10 +187,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     contentContainer.style.width = "600px";
                     contentContainer.style.maxWidth = "600px";
                     contentContainer.style.boxSizing = "border-box";
-                    contentContainer.style.position = "absolute"; // 使用绝对定位
-                    contentContainer.style.top = "100%"; // 放在按钮下方
-                    contentContainer.style.left = "0";
-                    contentContainer.style.zIndex = "999"; // 确保内容在最上层
+                    contentContainer.style.position = "relative"; // 使用相对定位而非绝对定位
+                    contentContainer.style.zIndex = "9999"; // 确保内容在最上层
                     contentContainer.style.padding = "15px";
                     contentContainer.style.borderRadius = "0 0 8px 8px"; // 底部圆角
                     contentContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)"; // 添加阴影
@@ -198,6 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     contentContainer.style.overflowY = "visible"; // 允许内容溢出
                     contentContainer.style.backgroundColor = "#ffffff"; // 白色背景
                     contentContainer.style.border = "1px solid #e0e0e0"; // 添加浅灰色边框
+                    contentContainer.style.marginBottom = "20px"; // 添加底部间距
                     
                     // 将按钮添加到折叠容器
                     collapsibleContainer.appendChild(button);
