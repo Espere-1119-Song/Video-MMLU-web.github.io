@@ -1213,6 +1213,60 @@
     });
     </script>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 获取所有折叠内容
+        const collapseContents = document.querySelectorAll('.collapse-content');
+        
+        collapseContents.forEach(content => {
+            // 创建一个包装器 div
+            const wrapper = document.createElement('div');
+            wrapper.className = 'content-wrapper';
+            wrapper.style.backgroundColor = '#ffffff';
+            wrapper.style.padding = '15px';
+            wrapper.style.border = '1px solid #dee2e6';
+            wrapper.style.borderRadius = '4px';
+            wrapper.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+            wrapper.style.marginTop = '10px';
+            wrapper.style.position = 'relative';
+            wrapper.style.zIndex = '9999';
+            
+            // 获取内容的父元素
+            const parent = content.parentNode;
+            
+            // 将内容移动到包装器中
+            parent.insertBefore(wrapper, content);
+            wrapper.appendChild(content);
+            
+            // 修改内容的样式
+            content.style.backgroundColor = '#ffffff';
+            content.style.position = 'relative';
+            content.style.zIndex = '10000';
+            
+            // 确保内部元素也有白色背景
+            const tables = content.querySelectorAll('table');
+            tables.forEach(table => {
+                table.style.backgroundColor = '#ffffff';
+            });
+            
+            const rows = content.querySelectorAll('tr');
+            rows.forEach(row => {
+                row.style.backgroundColor = '#ffffff';
+            });
+            
+            const paragraphs = content.querySelectorAll('p');
+            paragraphs.forEach(p => {
+                p.style.backgroundColor = '#ffffff';
+                p.style.position = 'relative';
+                p.style.zIndex = '10001';
+                p.style.margin = '0 0 10px 0';
+                p.style.lineHeight = '1.5';
+                p.style.color = '#333';
+            });
+        });
+    });
+    </script>
+
 </body>
 
 
