@@ -215,98 +215,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // 修改按钮点击事件
                     button.addEventListener("click", function() {
-                        // 获取所有内容容器
-                        const allContentContainers = document.querySelectorAll('.collapse-content');
+                        // 获取展开内容区域
+                        const expandedArea = document.querySelector('.expanded-content-area');
                         
-                        // 切换内容显示状态
-                        if (contentContainer.style.display === "none") {
-                            // 先隐藏所有内容
-                            allContentContainers.forEach(container => {
-                                container.style.display = "none";
-                            });
-                            
-                            // 更新所有按钮图标
-                            const allButtons = document.querySelectorAll('button');
-                            allButtons.forEach(btn => {
-                                const btnIcon = btn.querySelector('.fas');
-                                if (btnIcon) {
-                                    btnIcon.classList.remove('fa-angle-up');
-                                    btnIcon.classList.add('fa-angle-down');
-                                }
-                            });
-                            
-                            // 显示当前内容
-                            contentContainer.style.display = "block";
-                            
-                            // 更新图标
-                            const icon = button.querySelector('.fas');
-                            if (icon) {
-                                icon.classList.remove('fa-angle-down');
-                                icon.classList.add('fa-angle-up');
-                            }
-                            
-                            // 暂停轮播
-                            isPaused = true;
-                            carouselContainer.style.cursor = "default";
-                            stopScroll();
-                            
-                            // 将内容克隆到展开区域
-                            expandedContentArea.innerHTML = contentContainer.innerHTML;
-                            expandedContentArea.style.display = "block";
-                            
-                            // 隐藏原始内容
-                            contentContainer.style.display = "none";
-                            
-                            // 调整展开内容下方的任何内容的位置
-                            setTimeout(() => {
-                                // 获取展开内容区域的位置
-                                const expandedRect = expandedContentArea.getBoundingClientRect();
-                                const expandedBottom = expandedRect.bottom;
-                                
-                                // 获取视频容器的位置
-                                const videoContainerRect = videoContainer.getBoundingClientRect();
-                                
-                                // 查找视频容器后面的所有元素
-                                const allElements = document.querySelectorAll('body > *');
-                                let nextElement = null;
-                                
-                                // 找到视频容器后的第一个元素
-                                for (let i = 0; i < allElements.length; i++) {
-                                    const element = allElements[i];
-                                    const elementRect = element.getBoundingClientRect();
-                                    
-                                    // 如果元素在视频容器下方且不是视频容器的子元素
-                                    if (elementRect.top >= videoContainerRect.bottom && 
-                                        !videoContainer.contains(element) && 
-                                        element !== videoContainer) {
-                                        nextElement = element;
-                                        break;
-                                    }
-                                }
-                                
-                                // 如果找到了下一个元素
-                                if (nextElement) {
-                                    // 获取下一个元素的位置
-                                    const nextElementRect = nextElement.getBoundingClientRect();
-                                    const nextElementTop = nextElementRect.top;
-                                    
-                                    // 计算需要的额外空间 - 只添加必要的空间
-                                    if (nextElementTop < expandedBottom) {
-                                        const neededSpace = expandedBottom - nextElementTop + 2; // 只添加5px额外空间
-                                        nextElement.style.marginTop = neededSpace + 'px';
-                                        
-                                        // 存储原始的margin-top，以便之后恢复
-                                        if (!nextElement.dataset.originalMarginTop) {
-                                            nextElement.dataset.originalMarginTop = window.getComputedStyle(nextElement).marginTop;
-                                        }
-                                    }
-                                }
-                            }, 100);
-                        } else {
-                            // 隐藏内容
-                            contentContainer.style.display = "none";
-                            expandedContentArea.style.display = "none";
-                            expandedContentArea.innerHTML = "";
+                        // 检查展开内容区域是否已显示
+                        const isExpanded = expandedArea && expandedArea.style.display === "block";
+                        
+                        // 如果已经展开，则收起
+                        if (isExpanded) {
+                            // 隐藏展开内容
+                            expandedArea.style.display = "none";
+                            expandedArea.innerHTML = "";
                             
                             // 更新图标
                             const icon = button.querySelector('.fas');
@@ -325,6 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             let nextElement = null;
                             
                             // 找到视频容器后的第一个元素
+                            const videoContainerRect = videoContainer.getBoundingClientRect();
                             for (let i = 0; i < allElements.length; i++) {
                                 const element = allElements[i];
                                 const elementRect = element.getBoundingClientRect();
@@ -342,44 +262,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (nextElement && nextElement.dataset.originalMarginTop) {
                                 nextElement.style.marginTop = nextElement.dataset.originalMarginTop;
                             }
-                        }
-                    });
-                    
-                    // 将折叠容器添加到视频项
-                    videoItem.appendChild(videoWrapper);
-                    videoItem.appendChild(collapsibleContainer);
-                    
-                    // 将视频项添加到数组
-                    videoItems.push(videoItem);
-                }
-            }
-        });
-        
-        // 计算轨道宽度
-        const itemWidth = 620; // 每个项的宽度（包括间距）
-        const originalTrackWidth = itemWidth * videoItems.length;
-        
-        // 将视频项添加到轨道
-        videoItems.forEach(item => {
-            carouselTrack.appendChild(item);
-        });
-        
-        // 复制所有视频项并添加到轨道末尾，实现无缝循环
-        if (videoItems.length > 0) {
-            videoItems.forEach(item => {
-                const clonedItem = item.cloneNode(true);
-                
-                // 为克隆项中的按钮添加点击事件
-                const clonedButton = clonedItem.querySelector('button');
-                const clonedContent = clonedItem.querySelector('.collapse-content');
-                
-                if (clonedButton && clonedContent) {
-                    clonedButton.addEventListener("click", function() {
-                        // 获取所有内容容器
-                        const allContentContainers = document.querySelectorAll('.collapse-content');
-                        
-                        // 切换内容显示状态
-                        if (clonedContent.style.display === "none") {
+                        } else {
+                            // 获取所有内容容器
+                            const allContentContainers = document.querySelectorAll('.collapse-content');
+                            
                             // 先隐藏所有内容
                             allContentContainers.forEach(container => {
                                 container.style.display = "none";
@@ -395,11 +281,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                             });
                             
-                            // 显示当前内容
-                            clonedContent.style.display = "block";
-                            
                             // 更新图标
-                            const icon = clonedButton.querySelector('.fas');
+                            const icon = button.querySelector('.fas');
                             if (icon) {
                                 icon.classList.remove('fa-angle-down');
                                 icon.classList.add('fa-angle-up');
@@ -411,11 +294,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             stopScroll();
                             
                             // 将内容克隆到展开区域
-                            expandedContentArea.innerHTML = clonedContent.innerHTML;
+                            expandedContentArea.innerHTML = contentContainer.innerHTML;
                             expandedContentArea.style.display = "block";
-                            
-                            // 隐藏原始内容
-                            clonedContent.style.display = "none";
                             
                             // 调整展开内容下方的任何内容的位置
                             setTimeout(() => {
@@ -462,11 +342,50 @@ document.addEventListener('DOMContentLoaded', function() {
                                     }
                                 }
                             }, 100);
-                        } else {
-                            // 隐藏内容
-                            clonedContent.style.display = "none";
-                            expandedContentArea.style.display = "none";
-                            expandedContentArea.innerHTML = "";
+                        }
+                    });
+                    
+                    // 将折叠容器添加到视频项
+                    videoItem.appendChild(videoWrapper);
+                    videoItem.appendChild(collapsibleContainer);
+                    
+                    // 将视频项添加到数组
+                    videoItems.push(videoItem);
+                }
+            }
+        });
+        
+        // 计算轨道宽度
+        const itemWidth = 620; // 每个项的宽度（包括间距）
+        const originalTrackWidth = itemWidth * videoItems.length;
+        
+        // 将视频项添加到轨道
+        videoItems.forEach(item => {
+            carouselTrack.appendChild(item);
+        });
+        
+        // 复制所有视频项并添加到轨道末尾，实现无缝循环
+        if (videoItems.length > 0) {
+            videoItems.forEach(item => {
+                const clonedItem = item.cloneNode(true);
+                
+                // 为克隆项中的按钮添加点击事件
+                const clonedButton = clonedItem.querySelector('button');
+                const clonedContent = clonedItem.querySelector('.collapse-content');
+                
+                if (clonedButton && clonedContent) {
+                    clonedButton.addEventListener("click", function() {
+                        // 获取展开内容区域
+                        const expandedArea = document.querySelector('.expanded-content-area');
+                        
+                        // 检查展开内容区域是否已显示
+                        const isExpanded = expandedArea && expandedArea.style.display === "block";
+                        
+                        // 如果已经展开，则收起
+                        if (isExpanded) {
+                            // 隐藏展开内容
+                            expandedArea.style.display = "none";
+                            expandedArea.innerHTML = "";
                             
                             // 更新图标
                             const icon = clonedButton.querySelector('.fas');
@@ -485,6 +404,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             let nextElement = null;
                             
                             // 找到视频容器后的第一个元素
+                            const videoContainerRect = videoContainer.getBoundingClientRect();
                             for (let i = 0; i < allElements.length; i++) {
                                 const element = allElements[i];
                                 const elementRect = element.getBoundingClientRect();
@@ -502,6 +422,86 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (nextElement && nextElement.dataset.originalMarginTop) {
                                 nextElement.style.marginTop = nextElement.dataset.originalMarginTop;
                             }
+                        } else {
+                            // 获取所有内容容器
+                            const allContentContainers = document.querySelectorAll('.collapse-content');
+                            
+                            // 先隐藏所有内容
+                            allContentContainers.forEach(container => {
+                                container.style.display = "none";
+                            });
+                            
+                            // 更新所有按钮图标
+                            const allButtons = document.querySelectorAll('button');
+                            allButtons.forEach(btn => {
+                                const btnIcon = btn.querySelector('.fas');
+                                if (btnIcon) {
+                                    btnIcon.classList.remove('fa-angle-up');
+                                    btnIcon.classList.add('fa-angle-down');
+                                }
+                            });
+                            
+                            // 更新图标
+                            const icon = clonedButton.querySelector('.fas');
+                            if (icon) {
+                                icon.classList.remove('fa-angle-down');
+                                icon.classList.add('fa-angle-up');
+                            }
+                            
+                            // 暂停轮播
+                            isPaused = true;
+                            carouselContainer.style.cursor = "default";
+                            stopScroll();
+                            
+                            // 将内容克隆到展开区域
+                            expandedContentArea.innerHTML = clonedContent.innerHTML;
+                            expandedContentArea.style.display = "block";
+                            
+                            // 调整展开内容下方的任何内容的位置
+                            setTimeout(() => {
+                                // 获取展开内容区域的位置
+                                const expandedRect = expandedContentArea.getBoundingClientRect();
+                                const expandedBottom = expandedRect.bottom;
+                                
+                                // 获取视频容器的位置
+                                const videoContainerRect = videoContainer.getBoundingClientRect();
+                                
+                                // 查找视频容器后面的所有元素
+                                const allElements = document.querySelectorAll('body > *');
+                                let nextElement = null;
+                                
+                                // 找到视频容器后的第一个元素
+                                for (let i = 0; i < allElements.length; i++) {
+                                    const element = allElements[i];
+                                    const elementRect = element.getBoundingClientRect();
+                                    
+                                    // 如果元素在视频容器下方且不是视频容器的子元素
+                                    if (elementRect.top >= videoContainerRect.bottom && 
+                                        !videoContainer.contains(element) && 
+                                        element !== videoContainer) {
+                                        nextElement = element;
+                                        break;
+                                    }
+                                }
+                                
+                                // 如果找到了下一个元素
+                                if (nextElement) {
+                                    // 获取下一个元素的位置
+                                    const nextElementRect = nextElement.getBoundingClientRect();
+                                    const nextElementTop = nextElementRect.top;
+                                    
+                                    // 计算需要的额外空间 - 只添加必要的空间
+                                    if (nextElementTop < expandedBottom) {
+                                        const neededSpace = expandedBottom - nextElementTop + 5; // 只添加5px额外空间
+                                        nextElement.style.marginTop = neededSpace + 'px';
+                                        
+                                        // 存储原始的margin-top，以便之后恢复
+                                        if (!nextElement.dataset.originalMarginTop) {
+                                            nextElement.dataset.originalMarginTop = window.getComputedStyle(nextElement).marginTop;
+                                        }
+                                    }
+                                }
+                            }, 100);
                         }
                     });
                 }
