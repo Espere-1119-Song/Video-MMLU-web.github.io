@@ -257,27 +257,48 @@ document.addEventListener('DOMContentLoaded', function() {
                             // 隐藏原始内容
                             contentContainer.style.display = "none";
                             
-                            // 调整Abstract部分的位置 - 使用更精确的计算
+                            // 调整展开内容下方的任何内容的位置
                             setTimeout(() => {
-                                // 获取展开内容区域的高度
-                                const expandedHeight = expandedContentArea.offsetHeight;
-                                
                                 // 获取展开内容区域的位置
                                 const expandedRect = expandedContentArea.getBoundingClientRect();
                                 const expandedBottom = expandedRect.bottom;
                                 
-                                // 查找Abstract部分
-                                const abstractSection = document.querySelector('.abstract-section, #abstract, .abstract');
-                                if (abstractSection) {
-                                    // 获取Abstract的位置
-                                    const abstractRect = abstractSection.getBoundingClientRect();
-                                    const abstractTop = abstractRect.top;
+                                // 获取视频容器的位置
+                                const videoContainerRect = videoContainer.getBoundingClientRect();
+                                
+                                // 查找视频容器后面的所有元素
+                                const allElements = document.querySelectorAll('body > *');
+                                let nextElement = null;
+                                
+                                // 找到视频容器后的第一个元素
+                                for (let i = 0; i < allElements.length; i++) {
+                                    const element = allElements[i];
+                                    const elementRect = element.getBoundingClientRect();
+                                    
+                                    // 如果元素在视频容器下方且不是视频容器的子元素
+                                    if (elementRect.top >= videoContainerRect.bottom && 
+                                        !videoContainer.contains(element) && 
+                                        element !== videoContainer) {
+                                        nextElement = element;
+                                        break;
+                                    }
+                                }
+                                
+                                // 如果找到了下一个元素
+                                if (nextElement) {
+                                    // 获取下一个元素的位置
+                                    const nextElementRect = nextElement.getBoundingClientRect();
+                                    const nextElementTop = nextElementRect.top;
                                     
                                     // 计算需要的额外空间 - 只添加必要的空间
-                                    // 如果Abstract顶部已经在展开内容底部之下，则不需要额外空间
-                                    if (abstractTop < expandedBottom) {
-                                        const neededSpace = expandedBottom - abstractTop + 2; // 只添加5px额外空间
-                                        abstractSection.style.marginTop = neededSpace + 'px';
+                                    if (nextElementTop < expandedBottom) {
+                                        const neededSpace = expandedBottom - nextElementTop + 2; // 只添加5px额外空间
+                                        nextElement.style.marginTop = neededSpace + 'px';
+                                        
+                                        // 存储原始的margin-top，以便之后恢复
+                                        if (!nextElement.dataset.originalMarginTop) {
+                                            nextElement.dataset.originalMarginTop = window.getComputedStyle(nextElement).marginTop;
+                                        }
                                     }
                                 }
                             }, 100);
@@ -299,10 +320,27 @@ document.addEventListener('DOMContentLoaded', function() {
                             carouselContainer.style.cursor = "grab";
                             startContinuousScroll();
                             
-                            // 恢复Abstract部分的位置
-                            const abstractSection = document.querySelector('.abstract-section, #abstract, .abstract');
-                            if (abstractSection) {
-                                abstractSection.style.marginTop = '';
+                            // 恢复下一个元素的位置
+                            const allElements = document.querySelectorAll('body > *');
+                            let nextElement = null;
+                            
+                            // 找到视频容器后的第一个元素
+                            for (let i = 0; i < allElements.length; i++) {
+                                const element = allElements[i];
+                                const elementRect = element.getBoundingClientRect();
+                                
+                                // 如果元素在视频容器下方且不是视频容器的子元素
+                                if (elementRect.top >= videoContainerRect.bottom && 
+                                    !videoContainer.contains(element) && 
+                                    element !== videoContainer) {
+                                    nextElement = element;
+                                    break;
+                                }
+                            }
+                            
+                            // 如果找到了下一个元素
+                            if (nextElement && nextElement.dataset.originalMarginTop) {
+                                nextElement.style.marginTop = nextElement.dataset.originalMarginTop;
                             }
                         }
                     });
@@ -379,27 +417,48 @@ document.addEventListener('DOMContentLoaded', function() {
                             // 隐藏原始内容
                             clonedContent.style.display = "none";
                             
-                            // 调整Abstract部分的位置 - 使用更精确的计算
+                            // 调整展开内容下方的任何内容的位置
                             setTimeout(() => {
-                                // 获取展开内容区域的高度
-                                const expandedHeight = expandedContentArea.offsetHeight;
-                                
                                 // 获取展开内容区域的位置
                                 const expandedRect = expandedContentArea.getBoundingClientRect();
                                 const expandedBottom = expandedRect.bottom;
                                 
-                                // 查找Abstract部分
-                                const abstractSection = document.querySelector('.abstract-section, #abstract, .abstract');
-                                if (abstractSection) {
-                                    // 获取Abstract的位置
-                                    const abstractRect = abstractSection.getBoundingClientRect();
-                                    const abstractTop = abstractRect.top;
+                                // 获取视频容器的位置
+                                const videoContainerRect = videoContainer.getBoundingClientRect();
+                                
+                                // 查找视频容器后面的所有元素
+                                const allElements = document.querySelectorAll('body > *');
+                                let nextElement = null;
+                                
+                                // 找到视频容器后的第一个元素
+                                for (let i = 0; i < allElements.length; i++) {
+                                    const element = allElements[i];
+                                    const elementRect = element.getBoundingClientRect();
+                                    
+                                    // 如果元素在视频容器下方且不是视频容器的子元素
+                                    if (elementRect.top >= videoContainerRect.bottom && 
+                                        !videoContainer.contains(element) && 
+                                        element !== videoContainer) {
+                                        nextElement = element;
+                                        break;
+                                    }
+                                }
+                                
+                                // 如果找到了下一个元素
+                                if (nextElement) {
+                                    // 获取下一个元素的位置
+                                    const nextElementRect = nextElement.getBoundingClientRect();
+                                    const nextElementTop = nextElementRect.top;
                                     
                                     // 计算需要的额外空间 - 只添加必要的空间
-                                    // 如果Abstract顶部已经在展开内容底部之下，则不需要额外空间
-                                    if (abstractTop < expandedBottom) {
-                                        const neededSpace = expandedBottom - abstractTop + 5; // 只添加5px额外空间
-                                        abstractSection.style.marginTop = neededSpace + 'px';
+                                    if (nextElementTop < expandedBottom) {
+                                        const neededSpace = expandedBottom - nextElementTop + 5; // 只添加5px额外空间
+                                        nextElement.style.marginTop = neededSpace + 'px';
+                                        
+                                        // 存储原始的margin-top，以便之后恢复
+                                        if (!nextElement.dataset.originalMarginTop) {
+                                            nextElement.dataset.originalMarginTop = window.getComputedStyle(nextElement).marginTop;
+                                        }
                                     }
                                 }
                             }, 100);
@@ -421,10 +480,27 @@ document.addEventListener('DOMContentLoaded', function() {
                             carouselContainer.style.cursor = "grab";
                             startContinuousScroll();
                             
-                            // 恢复Abstract部分的位置
-                            const abstractSection = document.querySelector('.abstract-section, #abstract, .abstract');
-                            if (abstractSection) {
-                                abstractSection.style.marginTop = '';
+                            // 恢复下一个元素的位置
+                            const allElements = document.querySelectorAll('body > *');
+                            let nextElement = null;
+                            
+                            // 找到视频容器后的第一个元素
+                            for (let i = 0; i < allElements.length; i++) {
+                                const element = allElements[i];
+                                const elementRect = element.getBoundingClientRect();
+                                
+                                // 如果元素在视频容器下方且不是视频容器的子元素
+                                if (elementRect.top >= videoContainerRect.bottom && 
+                                    !videoContainer.contains(element) && 
+                                    element !== videoContainer) {
+                                    nextElement = element;
+                                    break;
+                                }
+                            }
+                            
+                            // 如果找到了下一个元素
+                            if (nextElement && nextElement.dataset.originalMarginTop) {
+                                nextElement.style.marginTop = nextElement.dataset.originalMarginTop;
                             }
                         }
                     });
