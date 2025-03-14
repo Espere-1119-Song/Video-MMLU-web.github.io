@@ -108,29 +108,12 @@
         background-color: #ffffff !important; /* 纯白色背景 */
         opacity: 1 !important; /* 完全不透明 */
         z-index: 9999 !important; /* 非常高的 z-index 确保在最上层 */
-        position: relative !important; /* 相对定位 */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important; /* 添加阴影效果增强视觉分离 */
-        border: 1px solid #dee2e6 !important; /* 添加边框 */
-        border-radius: 4px !important; /* 圆角边框 */
-        padding: 15px !important; /* 内边距 */
-        margin-bottom: 20px !important; /* 底部外边距，与下方内容分开 */
     }
 
     .collapse-content table, 
     .collapse-content tr, 
     .collapse-content p {
         background-color: #ffffff !important; /* 确保所有内部元素背景也是纯白色 */
-        position: relative !important; /* 相对定位 */
-        z-index: 10000 !important; /* 比容器更高的 z-index */
-    }
-
-    /* 确保折叠内容在展开时不会被下方内容遮挡 */
-    button[aria-expanded="true"] + .collapse-content {
-        display: block !important;
-        position: absolute !important; /* 绝对定位 */
-        width: 100% !important; /* 宽度100% */
-        left: 0 !important;
-        top: 100% !important; /* 位于按钮下方 */
     }
     </style>
 </head>
