@@ -167,7 +167,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     collapsibleContainer.style.width = "600px";
                     collapsibleContainer.style.position = "relative";
                     collapsibleContainer.style.marginTop = "10px";
-                    collapsibleContainer.style.zIndex = "2"; // 确保折叠内容在视频下方
+                    collapsibleContainer.style.zIndex = "2";
+                    collapsibleContainer.style.display = "flex";
+                    collapsibleContainer.style.flexDirection = "column";
                     
                     // 克隆按钮
                     const button = collapsibleSection.querySelector("button").cloneNode(true);
@@ -188,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     contentContainer.style.maxWidth = "600px";
                     contentContainer.style.boxSizing = "border-box";
                     contentContainer.style.position = "relative"; // 使用相对定位而非绝对定位
-                    contentContainer.style.zIndex = "9999"; // 确保内容在最上层
+                    contentContainer.style.zIndex = "2"; // 确保不会超过其他元素
                     contentContainer.style.padding = "15px";
                     contentContainer.style.borderRadius = "0 0 8px 8px"; // 底部圆角
                     contentContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)"; // 添加阴影
@@ -225,24 +227,32 @@ document.addEventListener('DOMContentLoaded', function() {
                             
                             // 确保展开的内容完全可见
                             setTimeout(() => {
-                                // 获取按钮位置
-                                const buttonRect = button.getBoundingClientRect();
                                 // 获取内容高度
                                 const contentHeight = contentContainer.offsetHeight;
-                                // 计算内容底部位置
-                                const contentBottom = buttonRect.bottom + contentHeight;
+                                
+                                // 获取视频容器的底部位置
+                                const videoContainerBottom = videoContainer.getBoundingClientRect().bottom;
+                                
                                 // 获取视口高度
                                 const viewportHeight = window.innerHeight;
                                 
                                 // 如果内容底部超出视口，滚动页面使内容完全可见
-                                if (contentBottom > viewportHeight) {
-                                    const scrollAmount = contentBottom - viewportHeight + 20; // 额外20px空间
+                                if (videoContainerBottom + contentHeight > viewportHeight) {
+                                    const scrollAmount = videoContainerBottom + contentHeight - viewportHeight + 20;
                                     window.scrollBy({
                                         top: scrollAmount,
                                         behavior: 'smooth'
                                     });
                                 }
-                            }, 100); // 短暂延迟以确保内容已显示
+                                
+                                // 查找Abstract部分并调整其位置
+                                const abstractSection = document.querySelector('.abstract-section, #abstract, .abstract');
+                                if (abstractSection) {
+                                    // 计算需要的额外空间
+                                    const extraSpace = contentHeight + 20; // 额外20px空间
+                                    abstractSection.style.marginTop = extraSpace + 'px';
+                                }
+                            }, 100);
                         } else {
                             // 隐藏内容
                             contentContainer.style.display = "none";
@@ -258,6 +268,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             isPaused = false;
                             carouselContainer.style.cursor = "grab";
                             startContinuousScroll();
+                            
+                            // 恢复Abstract部分的位置
+                            const abstractSection = document.querySelector('.abstract-section, #abstract, .abstract');
+                            if (abstractSection) {
+                                abstractSection.style.marginTop = '';
+                            }
                         }
                     });
                     
@@ -310,24 +326,32 @@ document.addEventListener('DOMContentLoaded', function() {
                             
                             // 确保展开的内容完全可见
                             setTimeout(() => {
-                                // 获取按钮位置
-                                const buttonRect = clonedButton.getBoundingClientRect();
                                 // 获取内容高度
                                 const contentHeight = clonedContent.offsetHeight;
-                                // 计算内容底部位置
-                                const contentBottom = buttonRect.bottom + contentHeight;
+                                
+                                // 获取视频容器的底部位置
+                                const videoContainerBottom = videoContainer.getBoundingClientRect().bottom;
+                                
                                 // 获取视口高度
                                 const viewportHeight = window.innerHeight;
                                 
                                 // 如果内容底部超出视口，滚动页面使内容完全可见
-                                if (contentBottom > viewportHeight) {
-                                    const scrollAmount = contentBottom - viewportHeight + 20; // 额外20px空间
+                                if (videoContainerBottom + contentHeight > viewportHeight) {
+                                    const scrollAmount = videoContainerBottom + contentHeight - viewportHeight + 20;
                                     window.scrollBy({
                                         top: scrollAmount,
                                         behavior: 'smooth'
                                     });
                                 }
-                            }, 100); // 短暂延迟以确保内容已显示
+                                
+                                // 查找Abstract部分并调整其位置
+                                const abstractSection = document.querySelector('.abstract-section, #abstract, .abstract');
+                                if (abstractSection) {
+                                    // 计算需要的额外空间
+                                    const extraSpace = contentHeight + 20; // 额外20px空间
+                                    abstractSection.style.marginTop = extraSpace + 'px';
+                                }
+                            }, 100);
                         } else {
                             // 隐藏内容
                             clonedContent.style.display = "none";
@@ -343,8 +367,43 @@ document.addEventListener('DOMContentLoaded', function() {
                             isPaused = false;
                             carouselContainer.style.cursor = "grab";
                             startContinuousScroll();
+                            
+                            // 恢复Abstract部分的位置
+                            const abstractSection = document.querySelector('.abstract-section, #abstract, .abstract');
+                            if (abstractSection) {
+                                abstractSection.style.marginTop = '';
+                            }
                         }
                     });
+                }
+                
+                // 同样修改克隆项中的折叠内容容器样式
+                const clonedCollapsibleContainer = clonedItem.querySelector('.collapsible-container');
+                if (clonedCollapsibleContainer) {
+                    clonedCollapsibleContainer.style.width = "600px";
+                    clonedCollapsibleContainer.style.position = "relative";
+                    clonedCollapsibleContainer.style.marginTop = "10px";
+                    clonedCollapsibleContainer.style.zIndex = "2";
+                    clonedCollapsibleContainer.style.display = "flex";
+                    clonedCollapsibleContainer.style.flexDirection = "column";
+                }
+                
+                // 同样修改克隆项中的折叠内容样式
+                if (clonedContent) {
+                    clonedContent.style.display = "none";
+                    clonedContent.style.width = "600px";
+                    clonedContent.style.maxWidth = "600px";
+                    clonedContent.style.boxSizing = "border-box";
+                    clonedContent.style.position = "relative";
+                    clonedContent.style.zIndex = "2";
+                    clonedContent.style.padding = "15px";
+                    clonedContent.style.borderRadius = "0 0 8px 8px";
+                    clonedContent.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
+                    clonedContent.style.maxHeight = "none";
+                    clonedContent.style.overflowY = "visible";
+                    clonedContent.style.backgroundColor = "#ffffff";
+                    clonedContent.style.border = "1px solid #e0e0e0";
+                    clonedContent.style.marginBottom = "20px";
                 }
                 
                 carouselTrack.appendChild(clonedItem);
