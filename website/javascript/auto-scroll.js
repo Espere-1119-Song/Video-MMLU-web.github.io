@@ -100,6 +100,13 @@ document.addEventListener('DOMContentLoaded', function() {
         carouselContainer.style.border = "none"; // 确保没有边框
         carouselContainer.style.cursor = "grab"; // 显示抓取光标
         
+        // 创建一个容器来包含轮播和展开的内容
+        const carouselAndContentContainer = document.createElement("div");
+        carouselAndContentContainer.className = "carousel-and-content-container";
+        carouselAndContentContainer.style.position = "relative";
+        carouselAndContentContainer.style.width = "100%";
+        carouselAndContentContainer.style.marginBottom = "20px"; // 底部间距
+        
         // 创建轮播轨道 - 为了实现连续滚动，我们需要复制视频
         const carouselTrack = document.createElement("div");
         carouselTrack.className = "video-carousel-track";
@@ -208,9 +215,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // 添加按钮点击事件
                     button.addEventListener("click", function() {
+                        // 获取所有内容容器
+                        const allContentContainers = document.querySelectorAll('.collapse-content');
+                        
                         // 切换内容显示状态
                         if (contentContainer.style.display === "none") {
-                            // 显示内容
+                            // 先隐藏所有内容
+                            allContentContainers.forEach(container => {
+                                container.style.display = "none";
+                            });
+                            
+                            // 更新所有按钮图标
+                            const allButtons = document.querySelectorAll('button');
+                            allButtons.forEach(btn => {
+                                const btnIcon = btn.querySelector('.fas');
+                                if (btnIcon) {
+                                    btnIcon.classList.remove('fa-angle-up');
+                                    btnIcon.classList.add('fa-angle-down');
+                                }
+                            });
+                            
+                            // 显示当前内容
                             contentContainer.style.display = "block";
                             
                             // 更新图标
@@ -225,22 +250,31 @@ document.addEventListener('DOMContentLoaded', function() {
                             carouselContainer.style.cursor = "default";
                             stopScroll();
                             
-                            // 查找Abstract部分并调整其位置
+                            // 将内容克隆到展开区域
+                            expandedContentArea.innerHTML = contentContainer.innerHTML;
+                            expandedContentArea.style.display = "block";
+                            
+                            // 隐藏原始内容
+                            contentContainer.style.display = "none";
+                            
+                            // 调整Abstract部分的位置
                             setTimeout(() => {
-                                // 获取内容高度
-                                const contentHeight = contentContainer.offsetHeight;
+                                // 获取展开内容区域的高度
+                                const expandedHeight = expandedContentArea.offsetHeight;
                                 
                                 // 查找Abstract部分并调整其位置
                                 const abstractSection = document.querySelector('.abstract-section, #abstract, .abstract');
                                 if (abstractSection) {
-                                    // 计算需要的额外空间 - 减少额外空间
-                                    const extraSpace = contentHeight + 5; // 只额外添加5px空间
+                                    // 计算需要的额外空间
+                                    const extraSpace = expandedHeight + 10; // 额外10px空间
                                     abstractSection.style.marginTop = extraSpace + 'px';
                                 }
                             }, 100);
                         } else {
                             // 隐藏内容
                             contentContainer.style.display = "none";
+                            expandedContentArea.style.display = "none";
+                            expandedContentArea.innerHTML = "";
                             
                             // 更新图标
                             const icon = button.querySelector('.fas');
@@ -292,9 +326,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (clonedButton && clonedContent) {
                     clonedButton.addEventListener("click", function() {
+                        // 获取所有内容容器
+                        const allContentContainers = document.querySelectorAll('.collapse-content');
+                        
                         // 切换内容显示状态
                         if (clonedContent.style.display === "none") {
-                            // 显示内容
+                            // 先隐藏所有内容
+                            allContentContainers.forEach(container => {
+                                container.style.display = "none";
+                            });
+                            
+                            // 更新所有按钮图标
+                            const allButtons = document.querySelectorAll('button');
+                            allButtons.forEach(btn => {
+                                const btnIcon = btn.querySelector('.fas');
+                                if (btnIcon) {
+                                    btnIcon.classList.remove('fa-angle-up');
+                                    btnIcon.classList.add('fa-angle-down');
+                                }
+                            });
+                            
+                            // 显示当前内容
                             clonedContent.style.display = "block";
                             
                             // 更新图标
@@ -309,22 +361,31 @@ document.addEventListener('DOMContentLoaded', function() {
                             carouselContainer.style.cursor = "default";
                             stopScroll();
                             
-                            // 查找Abstract部分并调整其位置
+                            // 将内容克隆到展开区域
+                            expandedContentArea.innerHTML = clonedContent.innerHTML;
+                            expandedContentArea.style.display = "block";
+                            
+                            // 隐藏原始内容
+                            clonedContent.style.display = "none";
+                            
+                            // 调整Abstract部分的位置
                             setTimeout(() => {
-                                // 获取内容高度
-                                const contentHeight = clonedContent.offsetHeight;
+                                // 获取展开内容区域的高度
+                                const expandedHeight = expandedContentArea.offsetHeight;
                                 
                                 // 查找Abstract部分并调整其位置
                                 const abstractSection = document.querySelector('.abstract-section, #abstract, .abstract');
                                 if (abstractSection) {
-                                    // 计算需要的额外空间 - 减少额外空间
-                                    const extraSpace = contentHeight + 5; // 只额外添加5px空间
+                                    // 计算需要的额外空间
+                                    const extraSpace = expandedHeight + 10; // 额外10px空间
                                     abstractSection.style.marginTop = extraSpace + 'px';
                                 }
                             }, 100);
                         } else {
                             // 隐藏内容
                             clonedContent.style.display = "none";
+                            expandedContentArea.style.display = "none";
+                            expandedContentArea.innerHTML = "";
                             
                             // 更新图标
                             const icon = clonedButton.querySelector('.fas');
@@ -387,9 +448,30 @@ document.addEventListener('DOMContentLoaded', function() {
         // 将轮播轨道添加到轮播容器
         carouselContainer.appendChild(carouselTrack);
         
-        // 将轮播容器添加到页面
+        // 将轮播容器添加到包装容器
+        carouselAndContentContainer.appendChild(carouselContainer);
+        
+        // 创建一个区域用于显示展开的内容
+        const expandedContentArea = document.createElement("div");
+        expandedContentArea.className = "expanded-content-area";
+        expandedContentArea.style.width = "100%";
+        expandedContentArea.style.display = "none"; // 初始隐藏
+        expandedContentArea.style.marginTop = "10px";
+        expandedContentArea.style.position = "relative";
+        expandedContentArea.style.zIndex = "5";
+        expandedContentArea.style.backgroundColor = "white";
+        expandedContentArea.style.borderRadius = "8px";
+        expandedContentArea.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
+        expandedContentArea.style.padding = "15px";
+        expandedContentArea.style.boxSizing = "border-box";
+        expandedContentArea.style.transition = "height 0.3s ease";
+        
+        // 将展开内容区域添加到包装容器
+        carouselAndContentContainer.appendChild(expandedContentArea);
+        
+        // 将包装容器添加到页面
         videoContainer.innerHTML = ''; // 清空原有内容
-        videoContainer.appendChild(carouselContainer);
+        videoContainer.appendChild(carouselAndContentContainer);
         
         // 设置自动滚动
         let scrollPosition = 0;
