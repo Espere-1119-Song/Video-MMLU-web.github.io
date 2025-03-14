@@ -223,6 +223,27 @@ document.addEventListener('DOMContentLoaded', function() {
                             isPaused = true;
                             carouselContainer.style.cursor = "default";
                             stopScroll();
+                            
+                            // 确保展开的内容完全可见
+                            setTimeout(() => {
+                                // 获取按钮位置
+                                const buttonRect = button.getBoundingClientRect();
+                                // 获取内容高度
+                                const contentHeight = contentContainer.offsetHeight;
+                                // 计算内容底部位置
+                                const contentBottom = buttonRect.bottom + contentHeight;
+                                // 获取视口高度
+                                const viewportHeight = window.innerHeight;
+                                
+                                // 如果内容底部超出视口，滚动页面使内容完全可见
+                                if (contentBottom > viewportHeight) {
+                                    const scrollAmount = contentBottom - viewportHeight + 20; // 额外20px空间
+                                    window.scrollBy({
+                                        top: scrollAmount,
+                                        behavior: 'smooth'
+                                    });
+                                }
+                            }, 100); // 短暂延迟以确保内容已显示
                         } else {
                             // 隐藏内容
                             contentContainer.style.display = "none";
@@ -287,6 +308,27 @@ document.addEventListener('DOMContentLoaded', function() {
                             isPaused = true;
                             carouselContainer.style.cursor = "default";
                             stopScroll();
+                            
+                            // 确保展开的内容完全可见
+                            setTimeout(() => {
+                                // 获取按钮位置
+                                const buttonRect = clonedButton.getBoundingClientRect();
+                                // 获取内容高度
+                                const contentHeight = clonedContent.offsetHeight;
+                                // 计算内容底部位置
+                                const contentBottom = buttonRect.bottom + contentHeight;
+                                // 获取视口高度
+                                const viewportHeight = window.innerHeight;
+                                
+                                // 如果内容底部超出视口，滚动页面使内容完全可见
+                                if (contentBottom > viewportHeight) {
+                                    const scrollAmount = contentBottom - viewportHeight + 20; // 额外20px空间
+                                    window.scrollBy({
+                                        top: scrollAmount,
+                                        behavior: 'smooth'
+                                    });
+                                }
+                            }, 100); // 短暂延迟以确保内容已显示
                         } else {
                             // 隐藏内容
                             clonedContent.style.display = "none";
