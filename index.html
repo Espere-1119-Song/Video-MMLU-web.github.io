@@ -116,6 +116,44 @@
         background-color: #ffffff !important; /* 确保所有内部元素背景也是纯白色 */
     }
     </style>
+
+    <style>
+    /* 强制设置折叠内容的样式 */
+    .collapse.show, .collapsing {
+        background-color: white !important;
+        position: absolute !important;
+        z-index: 9999 !important;
+        width: 100% !important;
+        border: 2px solid #007bff !important;
+        border-radius: 5px !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5) !important;
+        padding: 15px !important;
+        margin-top: 5px !important;
+    }
+
+    /* 确保内部元素也有白色背景 */
+    .collapse.show table, .collapsing table,
+    .collapse.show tr, .collapsing tr,
+    .collapse.show td, .collapsing td,
+    .collapse.show p, .collapsing p {
+        background-color: white !important;
+        position: relative !important;
+        z-index: 10000 !important;
+        color: #333 !important;
+    }
+
+    /* 确保折叠内容在展开时不会被下方内容遮挡 */
+    .collapse.show {
+        display: block !important;
+        opacity: 1 !important;
+    }
+
+    /* 增加按钮的 z-index，确保它在折叠内容之上 */
+    [data-toggle="collapse"] {
+        position: relative !important;
+        z-index: 10001 !important;
+    }
+    </style>
 </head>
 
 <body>
@@ -1213,7 +1251,7 @@
     });
     </script>
 
-    <script>
+    <!-- <script>
     document.addEventListener('DOMContentLoaded', function() {
         // 获取所有折叠内容
         const collapseContents = document.querySelectorAll('.collapse-content');
@@ -1265,7 +1303,7 @@
             });
         });
     });
-    </script>
+    </script> -->
 
 </body>
 
