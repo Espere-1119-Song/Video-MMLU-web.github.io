@@ -225,31 +225,16 @@ document.addEventListener('DOMContentLoaded', function() {
                             carouselContainer.style.cursor = "default";
                             stopScroll();
                             
-                            // 确保展开的内容完全可见
+                            // 查找Abstract部分并调整其位置
                             setTimeout(() => {
                                 // 获取内容高度
                                 const contentHeight = contentContainer.offsetHeight;
                                 
-                                // 获取视频容器的底部位置
-                                const videoContainerBottom = videoContainer.getBoundingClientRect().bottom;
-                                
-                                // 获取视口高度
-                                const viewportHeight = window.innerHeight;
-                                
-                                // 如果内容底部超出视口，滚动页面使内容完全可见
-                                if (videoContainerBottom + contentHeight > viewportHeight) {
-                                    const scrollAmount = videoContainerBottom + contentHeight - viewportHeight + 20;
-                                    window.scrollBy({
-                                        top: scrollAmount,
-                                        behavior: 'smooth'
-                                    });
-                                }
-                                
                                 // 查找Abstract部分并调整其位置
                                 const abstractSection = document.querySelector('.abstract-section, #abstract, .abstract');
                                 if (abstractSection) {
-                                    // 计算需要的额外空间
-                                    const extraSpace = contentHeight + 20; // 额外20px空间
+                                    // 计算需要的额外空间 - 减少额外空间
+                                    const extraSpace = contentHeight + 5; // 只额外添加5px空间
                                     abstractSection.style.marginTop = extraSpace + 'px';
                                 }
                             }, 100);
@@ -324,31 +309,16 @@ document.addEventListener('DOMContentLoaded', function() {
                             carouselContainer.style.cursor = "default";
                             stopScroll();
                             
-                            // 确保展开的内容完全可见
+                            // 查找Abstract部分并调整其位置
                             setTimeout(() => {
                                 // 获取内容高度
                                 const contentHeight = clonedContent.offsetHeight;
                                 
-                                // 获取视频容器的底部位置
-                                const videoContainerBottom = videoContainer.getBoundingClientRect().bottom;
-                                
-                                // 获取视口高度
-                                const viewportHeight = window.innerHeight;
-                                
-                                // 如果内容底部超出视口，滚动页面使内容完全可见
-                                if (videoContainerBottom + contentHeight > viewportHeight) {
-                                    const scrollAmount = videoContainerBottom + contentHeight - viewportHeight + 20;
-                                    window.scrollBy({
-                                        top: scrollAmount,
-                                        behavior: 'smooth'
-                                    });
-                                }
-                                
                                 // 查找Abstract部分并调整其位置
                                 const abstractSection = document.querySelector('.abstract-section, #abstract, .abstract');
                                 if (abstractSection) {
-                                    // 计算需要的额外空间
-                                    const extraSpace = contentHeight + 20; // 额外20px空间
+                                    // 计算需要的额外空间 - 减少额外空间
+                                    const extraSpace = contentHeight + 5; // 只额外添加5px空间
                                     abstractSection.style.marginTop = extraSpace + 'px';
                                 }
                             }, 100);
